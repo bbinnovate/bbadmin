@@ -1,0 +1,181 @@
+"use client";
+import { useState } from "react";
+import { signupUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
+import Button from "../components/Button";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import { Eye, EyeOff } from "lucide-react";
+
+export default function SignupPage() {
+  const router = useRouter();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSignup(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    if (nameError || emailError) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const user = await signupUser(email, password, name);
+
+      const idToken = await user.getIdToken();
+      setCookie("firebase-auth", idToken, {
+        path: "/",
+        maxAge: 60 * 60 * 24,
+      });
+
+      alert("Signup successful! Welcome!");
+      router.push("/");
+    } catch (err: any) {
+      console.error("Signup Error:", err);
+
+      switch (err.code) {
+        case "auth/email-already-in-use":
+          setError("❌ Email already registered");
+          break;
+        case "auth/weak-password":
+          setError("❌ Password must be at least 6 characters");
+          break;
+        case "auth/invalid-email":
+          setError("❌ Invalid email format");
+          break;
+        default:
+          setError("❌ Signup failed. Please try again");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ✅ Name validation (letters + space only)
+  function handleNameChange(value: string) {
+    if (!/^[A-Za-z\s]*$/.test(value)) {
+      setNameError(" Name can contain only letters");
+      return;
+    }
+    setNameError("");
+    setName(value);
+  }
+
+  // ✅ Email validation (only a-z A-Z 0-9 @ .)
+  function handleEmailChange(value: string) {
+    if (!/^[A-Za-z0-9@.]*$/.test(value)) {
+      setEmailError(" Only letters, numbers, @ and . allowed");
+      return;
+    }
+
+    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setEmailError(" Enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+
+    setEmail(value);
+  }
+
+  return (
+    <div>
+      <Navbar />
+
+      <div className="flex h-screen items-center justify-center">
+        <form
+          onSubmit={handleSignup}
+          className="relative bg-black p-10 shadow-md w-96 space-y-4 overflow-hidden rounded-[20px]"
+        >
+          <div className="absolute -right-1 top-0 w-2 sm:w-2 md:w-5 h-full bg-[#FAB31E]" />
+
+          <h2 className="text-xl font-semibold text-white text-center">
+            Signup
+          </h2>
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
+
+          {/* Name */}
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder="Full Name"
+            required
+            className="w-full border p-2 rounded text-white bg-black"
+          />
+          {nameError && (
+            <p className="text-red-500 text-xs">{nameError}</p>
+          )}
+
+          {/* Email */}
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            placeholder="Email"
+            required
+            className="w-full border p-2 rounded text-white bg-black"
+          />
+          {emailError && (
+            <p className="text-red-500 text-xs">{emailError}</p>
+          )}
+
+          {/* Password with proper eye icon */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="w-full border p-2 rounded text-white bg-black pr-12"
+            />
+
+            <button
+  type="button"
+  onClick={() => setShowPassword(!showPassword)}
+  className="absolute right-3 top-1/2 -translate-y-1/2 text-white opacity-80 hover:opacity-100 transition cursor-pointer"
+>
+  {showPassword ? (
+    <EyeOff size={20} />
+  ) : (
+    <Eye size={20} />
+  )}
+</button>
+
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading || !!nameError || !!emailError}
+            className="white-text"
+            text={loading ? "Creating account..." : "Sign Up"}
+          />
+
+          <p className="text-center text-white text-sm mt-2">
+            Already have an account?{" "}
+            <a href="/login" className="text-[#FAB31E] underline">
+              Login
+            </a>
+          </p>
+        </form>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
