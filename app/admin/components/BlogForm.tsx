@@ -296,7 +296,7 @@ export default function BlogForm({ initial, onSuccess }: { initial?: any; onSucc
                   key: "selection",
                 },
               ]}
-              onChange={(item) => {
+              onChange={(item:any) => {
                 if (item.selection) {
                   setSelectedDate(item.selection.startDate ?? new Date());
                 }

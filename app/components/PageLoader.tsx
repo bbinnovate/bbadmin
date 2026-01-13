@@ -26,7 +26,7 @@ export default function PageLoader({ children }: PageLoaderProps) {
         <Image
           width={40}
           height={40}
-          src="/BB-web-chai-1.gif"
+          src="/images/BB-web-chai-1.gif"
           alt="Loading..."
           className="w-100 h-100"
         />
