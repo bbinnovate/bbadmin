@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { DateRange, Range } from "react-date-range";
+import { DateRange } from "react-date-range";
 import { ChevronDown } from "lucide-react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -18,6 +18,13 @@ type ContactApp = {
   message: string;
   createdAt?: { seconds: number };
 };
+
+type DateRangeState = {
+  startDate?: Date;
+  endDate?: Date;
+  key: string;
+};
+
 
 export default function ContactApplications() {
   const [applications, setApplications] = useState<ContactApp[]>([]);
@@ -47,14 +54,14 @@ const handlePageChange = (page: number) => {
 };
 
 
-  const [dateRange, setDateRange] = useState<Range[]>([
+  const [dateRange, setDateRange] = useState<DateRangeState[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);
 
   // Export CSV popup
   const today = new Date();
   const [showExportRange, setShowExportRange] = useState(false);
-  const [exportRange, setExportRange] = useState<Range[]>([
+  const [exportRange, setExportRange] = useState<DateRangeState[]>([
     { startDate: today, endDate: today, key: "export" },
   ]);
 
@@ -238,7 +245,7 @@ const capitalizeWords = (value?: string) =>
       <div className="absolute z-50 bg-white shadow rounded-lg mt-1">
         <DateRange
           ranges={dateRange}
-          onChange={(item) =>
+          onChange={(item :any) =>
             setDateRange([{ ...item.selection, key: "selection" }])
           }
         />
@@ -470,7 +477,7 @@ const capitalizeWords = (value?: string) =>
             <div className="flex justify-center items-center w-full">
             <DateRange
               ranges={exportRange}
-              onChange={(ranges) =>
+              onChange={(ranges:any) =>
                 setExportRange([{ ...ranges.export!, key: "export" }])
               }
             />
