@@ -24,6 +24,8 @@ export default function Sidebar() {
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
   const [careerOpen, setCareerOpen] = useState(false);
+  const [calculatorOpen, setcalculatorOpen] = useState(false);
+
 
   const [careerCount, setCareerCount] = useState(0);
   const [clientCount, setClientCount] = useState(0);
@@ -195,6 +197,75 @@ useEffect(() => {
             {clientCount}
           </span>
         </Link>
+
+  
+        {/* Calculator */}
+        <div className="space-y-1">
+          <button
+            onClick={() => setcalculatorOpen(!calculatorOpen)}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${
+              pathname.startsWith("/admin/calculatorform") ||
+              pathname.startsWith("/admin/allcalculator") ||
+              pathname.startsWith("/admin/calculator-applications") 
+                ? "bg-[var(--color-highlight)] text-black"
+                : "hover:bg-gray-800"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Briefcase size={18} />
+              Calculator
+            </div>
+            {calculatorOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+
+          {calculatorOpen && (
+            <div className="ml-8 space-y-1">
+              <Link
+                href="/admin/calculatorform"
+                className={`block px-3 py-2 rounded-lg text-sm ${
+                  pathname === "/admin/calculatorform"
+                    ? "bg-[var(--color-highlight)] text-black"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                Add Services
+              </Link>
+
+               <Link
+                href="/admin/allcalculator"
+                className={`block px-3 py-2 rounded-lg text-sm ${
+                  pathname === "/admin/allcalculator"
+                    ? "bg-[var(--color-highlight)] text-black"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                All Services
+              </Link>
+
+              <Link
+                href="/admin/calculator-applications"
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
+                  pathname === "/admin/calculator-applications"
+                    ? "bg-[var(--color-highlight)] text-black"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                <span>Manage Applications</span>
+
+                <span
+                  className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold ${
+                    pathname === "/admin/career-applications"
+                      ? "bg-black text-[var(--color-highlight)]"
+                      : "bg-[var(--color-highlight)] text-black"
+                  }`}
+                >
+                  {careerCount}
+                </span>
+              </Link>
+            </div>
+          )}
+        </div>
+
 
         {/* Users */}
         <Link

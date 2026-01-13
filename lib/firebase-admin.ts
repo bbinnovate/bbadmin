@@ -1,9 +1,11 @@
 import { getApps, initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
-const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT as string
-);
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT env variable is missing");
+}
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!getApps().length) {
   initializeApp({

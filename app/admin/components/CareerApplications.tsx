@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { DateRange, Range } from "react-date-range";
+import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { ChevronDown } from "lucide-react"; // 🔹 for dropdown arrows
@@ -20,6 +20,12 @@ type CareerApp = {
   availability: string;
   createdAt?: { seconds: number };
   role?: string; // Added optional role field
+};
+
+type DateRangeState = {
+  startDate?: Date;
+  endDate?: Date;
+  key: string;
 };
 
 export default function CareerApplications() {
@@ -46,9 +52,10 @@ const handlePageChange = (page: number) => {
 };
 
 
-  const [dateRange, setDateRange] = useState<Range[]>([
-    { startDate: undefined, endDate: undefined, key: "selection" },
-  ]);
+const [dateRange, setDateRange] = useState<DateRangeState[]>([
+  { startDate: undefined, endDate: undefined, key: "selection" },
+]);
+
  const today = new Date();
     const [exportRange, setExportRange] = useState([
     {
@@ -292,7 +299,7 @@ const handleExportCSV = () => {
             editableDateInputs
             moveRangeOnFirstSelection={false}
             ranges={dateRange}
-            onChange={(item) => {
+            onChange={(item: any) => {
               if (item.selection) {
                 const { startDate, endDate } = item.selection;
                 setDateRange([
@@ -359,7 +366,7 @@ const handleExportCSV = () => {
         editableDateInputs
         moveRangeOnFirstSelection={false}
         ranges={exportRange}
-        onChange={(ranges) => {
+        onChange={(ranges : any) => {
           const selection = ranges.export || ranges.selection;
           if (selection) {
             setExportRange([
