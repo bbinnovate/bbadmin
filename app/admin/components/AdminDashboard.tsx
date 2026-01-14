@@ -31,6 +31,9 @@ export default function AdminDashboard() {
   const [formsData, setFormsData] = useState<any[]>([]);
   const [ClientsData, setClientsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const adminCount = users.filter(u => u.role === "admin").length;
+  const userCount = users.filter(u => u.role === "user").length;
+
 
 
   // 🔹 Fetch Firestore data
@@ -118,10 +121,13 @@ const clientsData = Object.values(
 
 
   // 🔸 Users by Role
-  const usersPieData = users.map((u, i) => ({
-    name: u.role || `User ${i + 1}`,
-    value: 1,
-  }));
+
+
+  const usersPieData = [
+  { name: "Admins", value: adminCount },
+  { name: "Users", value: userCount },
+];
+
 
   // 🔸 Career Form Submissions by Date
   const formsLineData = Object.values(

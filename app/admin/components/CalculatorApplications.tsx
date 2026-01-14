@@ -362,7 +362,8 @@ const handleExportCSV = () => {
         </td>
 
                 <td className="p-3 font-semibold text-center">
-                  ₹{a.finalPrice?.toLocaleString("en-IN")}
+                  ₹{Number(a.finalPrice || 0).toLocaleString("en-IN")}
+
                 </td>
 
                 <td className="p-3">
@@ -433,18 +434,26 @@ const handleExportCSV = () => {
       {/* VIEW MODAL */}
       {viewApp && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          className="fixed flex-1 overflow-y-auto inset-0 bg-black/50 flex items-center justify-center z-50"
           onClick={() => setViewApp(null)}
         >
           <div
-            className="bg-white p-6 rounded-lg w-[45%]"
+            className="bg-white p-6 
+        w-[95vw] md:w-[70vw] lg:w-[45%]
+        max-h-[90vh]
+        
+        overflow-hidden
+        flex flex-col  overflow-y-auto
+        rounded-lg
+        shadow-lg"
             onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()} 
           >
             <h3 className="text-lg font-semibold mb-4 text-center">
                  Customer Quotation Preview
             </h3>
 
-             <div className="space-y-2 text-sm"> 
+             <div onWheel={(e) => e.stopPropagation()}  className="space-y-2 text-sm"> 
             <p><strong>Name:</strong> {capitalizeWords(viewApp.name)}</p>
             <p>
               <strong>Email:</strong>{" "}
@@ -466,10 +475,13 @@ const handleExportCSV = () => {
             </p>
 
             <p><strong>Service:</strong> {capitalizeWords(viewApp.serviceCalculator)}</p>
-            <p><strong>Total:</strong> ₹{viewApp.finalPrice.toLocaleString("en-IN")}</p>
+            <p>
+  <strong>Total:</strong> ₹{Number(viewApp?.finalPrice || 0).toLocaleString("en-IN")}
+</p>
+
 
              {/* QUOTATION */}
-        <div className="mt-5">
+        <div className="mt-5 ">
           <h5 className="font-semibold mb-2">Quotation:</h5>
 
           <div className="bg-gray-50 rounded-lg border">
@@ -491,7 +503,8 @@ const handleExportCSV = () => {
                 </div>
 
                 <div className="font-semibold text-right whitespace-nowrap">
-                  ₹{q.price.toLocaleString("en-IN")}
+                 ₹{Number(q.price || 0).toLocaleString("en-IN")}
+
                 </div>
               </div>
             ))}
