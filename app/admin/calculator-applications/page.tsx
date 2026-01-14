@@ -6,8 +6,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: "Bombay Blokes | Admin Calculator Applications",
   description:
-    "View and manage individual calculator applications submitted to Bombay Blokes. Access applicant details, review submissions, and handle recruitment efficiently from the admin panel.",
-};
+"View and manage all calculator applications submitted by users. Access lead details, selected services, cost estimates, and contact information from the Bombay Blokes admin panel.",};
 
 const Index = () => {
   return (

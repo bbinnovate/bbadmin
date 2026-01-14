@@ -4,10 +4,9 @@ import SmoothScroll from '@/app/components/SmoothScroll'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Bombay Blokes | Admin Calculator Applications",
+  title: "Bombay Blokes | Admin Calculator Management",
   description:
-    "View and manage individual calculator applications submitted to Bombay Blokes. Access applicant details, review submissions, and handle recruitment efficiently from the admin panel.",
-};
+ "Create, edit, and manage service cost calculators from the Bombay Blokes admin dashboard. Configure questions, pricing logic, and calculator metadata in one place.",};
 
 const Index = () => {
   return (
