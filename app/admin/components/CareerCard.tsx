@@ -1,12 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { Star } from "lucide-react";
+import { updateDoc, doc, collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 
 interface Career {
   id: string;
   title: string;
   description: string;
   isImmediate: boolean;
+  isFeatured: boolean;
   postedAt: { seconds: number };
 }
 
@@ -85,11 +90,16 @@ function renderEditorJsHTML(data: any) {
 }
 export default function CareerCard({
   career,
+  featuredId,
+  setFeaturedId,
   onDelete,
 }: {
   career: Career;
+  featuredId: string | null;
+  setFeaturedId: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
+
   const formattedDate = career.postedAt?.seconds
     ? (() => {
         const d = new Date(career.postedAt.seconds * 1000);
@@ -101,12 +111,50 @@ export default function CareerCard({
     : "Recent";
 
   return (
-    <div className="bg-white rounded shadow p-4 flex flex-col">
+    <div className="relative bg-white rounded shadow p-4 flex flex-col">
       {/* ✅ Image Placeholder (Same Style as Blogs) */}
       
 
       {/* ✅ Title */}
       <h5 className="font-semibold">{career.title}</h5>
+
+      <button
+  type="button"
+  className="absolute top-3 right-3 z-50 cursor-pointer"
+  onClick={async (e) => {
+    e.stopPropagation();
+
+    // 🔥 INSTANT UI UPDATE
+    setFeaturedId(career.id);
+
+    // 1️⃣ reset all stars in DB
+    const snap = await getDocs(collection(db, "careers"));
+    await Promise.all(
+      snap.docs.map((d) =>
+        updateDoc(doc(db, "careers", d.id), {
+          isFeatured: false,
+        })
+      )
+    );
+
+    // 2️⃣ set current as featured in DB
+    await updateDoc(doc(db, "careers", career.id), {
+      isFeatured: true,
+    });
+  }}
+>
+  <Star
+    size={18}
+    className={
+      featuredId === career.id
+        ? "fill-yellow-400 text-yellow-400"
+        : "text-gray-400 hover:text-yellow-400"
+    }
+  />
+</button>
+
+
+
 
       {/* ✅ Tags (same badge style as blogs) */}
       <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-gray-600">
@@ -151,7 +199,7 @@ export default function CareerCard({
         </button>
 
         <a
-          href="/join-our-team"
+          href="https://bombayblokes.com/join-our-team"
           target="_blank"
           rel="noreferrer"
           className="px-3 py-1 border rounded text-sm ml-auto"

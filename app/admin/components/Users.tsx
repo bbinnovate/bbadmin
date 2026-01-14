@@ -10,6 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 import toast from "react-hot-toast";
+import { Trash } from "lucide-react";
 
 type UserType = {
   id: string;
@@ -82,18 +83,19 @@ const Users = () => {
       <h3 className="text-2xl font-semibold mb-6">User Management</h3>
 
       <div className="overflow-x-auto border rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-100">
+        <table className="min-w-full border border-gray-200 text-sm">
+            <thead className="bg-gray-100 text-gray-700 font-semibold">
             <tr>
+              <th className="px-6 py-3 text-left">SR No.</th>
               <th className="px-6 py-3 text-left">Name</th>
               <th className="px-6 py-3 text-left">Email</th>
               <th className="px-6 py-3 text-left">Date Joined</th>
               <th className="px-6 py-3 text-left">Role</th>
-              <th className="px-6 py-3 text-right">Actions</th>
+              <th className="px-6 py-3 text-center">Actions</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 border-t">
             {users.map((user) => {
               // FORMAT DATE → DD/MM/YYYY
               let joinedDate = "—";
@@ -108,7 +110,9 @@ const Users = () => {
               }
 
               return (
-                <tr key={user.id}>
+                
+               <tr key={user.id} className="border-b border-black last:border-b-0">
+                  <td className="px-6 py-3 ">{users.indexOf(user) + 1}</td>
                   <td className="px-6 py-3 capitalize">{user.name || "—"}</td>
                   <td className="px-6 py-3">{user.email}</td>
                   <td className="px-6 py-3 capitalize">{joinedDate}</td>
@@ -140,14 +144,31 @@ const Users = () => {
                     </div>
                   </td>
 
-                  <td className="px-6 py-3 text-right">
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="text-red-600 hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </td>
+                  <td className="px-1 py-3">
+  <div className="flex justify-center">
+    <button
+      onClick={() => handleDelete(user.id)}
+      className="
+        h-9 
+        px-4 
+        bg-red-600 
+        text-white 
+        rounded-lg 
+        hover:bg-red-500
+        flex 
+        items-center 
+        gap-1.5 
+        text-sm 
+        font-medium
+        cursor-pointer
+      "
+    >
+      <Trash size={14} />
+      Delete
+    </button>
+  </div>
+</td>
+
                 </tr>
               );
             })}

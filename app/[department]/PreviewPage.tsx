@@ -21,6 +21,7 @@ type Option = {
 };
 
 type Question = {
+  question: any;
   isDependent: boolean;
   dependentOn?: Dependency;
   type: string;
@@ -33,6 +34,7 @@ type Question = {
 type CostItem = {
   type: string;
   label: string;
+  question: string;
   value: string;
   price: number;
 };
@@ -247,6 +249,7 @@ const updateCostItems = useCallback(() => {
 
     return {
       type: question.type,
+      question: question.question, 
       label: question.questionText,
       value: option.title,
       price: typeof option.price === "string" ? parseFloat(option.price) : option.price,
@@ -279,7 +282,7 @@ useEffect(() => {
   if (typeof window !== "undefined" && !localStorage.getItem("estimateId")) {
     (async () => {
       try {
-        const res = await fetch("/api/submit-form", {
+        const res = await fetch("/api/calculator", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -370,7 +373,7 @@ const handleSubmit = async () => {
   setIsSubmitting(true);
 
   try {
-    const res = await fetch("/api/submit-form", {
+    const res = await fetch("/api/calculator", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

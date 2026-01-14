@@ -350,7 +350,7 @@ export default function DesktopNav() {
   return (
     <div
       key={index}
-      className={`w-full flex justify-center items-center relative ${
+      className={`w-full flex justify-center items-center relative font-[miso]   ${
         index % 2 === 0 ? "border-r border-white" : ""
       }`}
     >

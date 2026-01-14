@@ -28,6 +28,7 @@ export default function Sidebar() {
 
 
   const [careerCount, setCareerCount] = useState(0);
+  const [calculatorCount, setcalculatorCount] = useState(0);
   const [clientCount, setClientCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
 
@@ -49,10 +50,14 @@ useEffect(() => {
       const contactSnap = await getDocs(
         collection(db, "contactSubmissions") // ✅ FIXED
       );
+        const calculatorSnap = await getDocs(
+          collection(db, "calculatorApplications")
+      );
 
       setCareerCount(careerSnap.size);
       setClientCount(clientSnap.size);
       setContactCount(contactSnap.size);
+      setcalculatorCount(calculatorSnap.size);
     } catch (error) {
       console.error("Error fetching sidebar counts:", error);
     }
@@ -63,14 +68,14 @@ useEffect(() => {
 
 
   return (
-    <aside className="w-64 bg-black text-white h-screen fixed left-0 top-0 flex flex-col rounded-r-[20px]">
+    <aside className="w-66 bg-black text-white h-screen fixed left-0 top-0 flex flex-col rounded-r-[20px]">
       <h3 className="p-4 font-bold border-b border-gray-800">Admin Panel</h3>
 
       <nav className="flex-1 p-3 space-y-1">
         {/* Dashboard */}
         <Link
           href="/admin"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
+          className={`flex items-center gap-3 px-2 py-2 rounded-lg text-[15px] ${
             pathname === "/admin"
               ? "bg-[var(--color-highlight)] text-black"
               : "hover:bg-gray-800"
@@ -83,7 +88,7 @@ useEffect(() => {
         {/* Blogs */}
         <Link
           href="/admin/blogs"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
+          className={`flex items-center gap-3 px-2 py-2 rounded-lg  text-[15px]${
             pathname === "/admin/blogs"
               ? "bg-[var(--color-highlight)] text-black"
               : "hover:bg-gray-800"
@@ -97,14 +102,14 @@ useEffect(() => {
         <div className="space-y-1">
           <button
             onClick={() => setCareerOpen(!careerOpen)}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${
+            className={`w-full flex items-center justify-between px-2 py-2 rounded-lg ${
               pathname.startsWith("/admin/careers") ||
               pathname.startsWith("/admin/career-applications")
                 ? "bg-[var(--color-highlight)] text-black"
                 : "hover:bg-gray-800"
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 text-[15px]">
               <Briefcase size={18} />
               Careers
             </div>
@@ -115,7 +120,7 @@ useEffect(() => {
             <div className="ml-8 space-y-1">
               <Link
                 href="/admin/careers"
-                className={`block px-3 py-2 rounded-lg text-sm ${
+                className={`block px-2 py-2 rounded-lg text-sm ${
                   pathname === "/admin/careers"
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
@@ -126,7 +131,7 @@ useEffect(() => {
 
               <Link
                 href="/admin/career-applications"
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
+                className={`flex items-center justify-between px-2 py-2 rounded-lg text-sm ${
                   pathname === "/admin/career-applications"
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
@@ -151,13 +156,13 @@ useEffect(() => {
         {/* Contact Applications */}
         <Link
           href="/admin/contact-applications"
-          className={`flex items-center justify-between px-3 py-2 rounded-lg ${
+          className={`flex items-center justify-between px-2 py-2 rounded-lg ${
             pathname === "/admin/contact-applications"
               ? "bg-[var(--color-highlight)] text-black"
               : "hover:bg-gray-800"
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-[15px]">
             <Mail size={18} />
             Contact Applications
           </div>
@@ -176,13 +181,13 @@ useEffect(() => {
         {/* Client Applications */}
         <Link
           href="/admin/client-applications"
-          className={`flex items-center justify-between px-3 py-2 rounded-lg ${
+          className={`flex items-center justify-between px-2 py-2 rounded-lg text-[15px] ${
             pathname === "/admin/client-applications"
               ? "bg-[var(--color-highlight)] text-black"
               : "hover:bg-gray-800"
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 ">
             <Building2 size={18} />
             Client Applications
           </div>
@@ -203,7 +208,7 @@ useEffect(() => {
         <div className="space-y-1">
           <button
             onClick={() => setcalculatorOpen(!calculatorOpen)}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg ${
+            className={`w-full flex items-center justify-between px-2 py-2 rounded-lg ${
               pathname.startsWith("/admin/calculatorform") ||
               pathname.startsWith("/admin/allcalculator") ||
               pathname.startsWith("/admin/calculator-applications") 
@@ -211,7 +216,7 @@ useEffect(() => {
                 : "hover:bg-gray-800"
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 text-[15px]">
               <Briefcase size={18} />
               Calculator
             </div>
@@ -222,7 +227,7 @@ useEffect(() => {
             <div className="ml-8 space-y-1">
               <Link
                 href="/admin/calculatorform"
-                className={`block px-3 py-2 rounded-lg text-sm ${
+                className={`block px-2 py-2 rounded-lg text-sm ${
                   pathname === "/admin/calculatorform"
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
@@ -233,7 +238,7 @@ useEffect(() => {
 
                <Link
                 href="/admin/allcalculator"
-                className={`block px-3 py-2 rounded-lg text-sm ${
+                className={`block px-2 py-2 rounded-lg text-sm ${
                   pathname === "/admin/allcalculator"
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
@@ -244,7 +249,7 @@ useEffect(() => {
 
               <Link
                 href="/admin/calculator-applications"
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
+                className={`flex items-center justify-between px-2 py-2 rounded-lg text-sm ${
                   pathname === "/admin/calculator-applications"
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
@@ -253,13 +258,13 @@ useEffect(() => {
                 <span>Manage Applications</span>
 
                 <span
-                  className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold ${
-                    pathname === "/admin/career-applications"
+                   className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold ${
+                    pathname === "/admin/calculator-applications"
                       ? "bg-black text-[var(--color-highlight)]"
                       : "bg-[var(--color-highlight)] text-black"
                   }`}
                 >
-                  {careerCount}
+                  {calculatorCount}
                 </span>
               </Link>
             </div>
@@ -270,7 +275,7 @@ useEffect(() => {
         {/* Users */}
         <Link
           href="/admin/users"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
+          className={`flex items-center gap-3 px-2 py-2 rounded-lg text-[15px] ${
             pathname === "/admin/users"
               ? "bg-[var(--color-highlight)] text-black"
               : "hover:bg-gray-800"

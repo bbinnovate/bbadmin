@@ -191,9 +191,9 @@ const Blogs = () => {
                       prose 
                       max-w-none
                     "
-                    dangerouslySetInnerHTML={{
-                      __html: renderEditorJsHTML(b.description),
-                    }}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: renderEditorJsHTML(b.description),
+                    // }}
                   />
 
                   {/* Actions */}
@@ -214,7 +214,7 @@ const Blogs = () => {
                     </button>
 
                     <a
-                      href={`/blogs/${b.slug}`}
+                      href={`https://bombayblokes.com/blogs/${b.slug}`}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3 py-1 border rounded text-sm ml-auto"

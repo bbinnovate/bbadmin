@@ -2,17 +2,20 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 // import Navbar from "./components/Navbar";
 // import Footer from "./components/Footer";
+import localFont from "next/font/local";
+import { Poppins } from "next/font/google";
 import PageLoader from "./components/PageLoader";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const miso = localFont({
+  src: [{ path: "../public/fonts/VAG-Regular2.otf", weight: "400" }],
+  variable: "--font-miso",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -27,10 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className={`${miso.variable} ${poppins.variable}`}>
+      <body>
          {/* <Navbar/> */}
         <PageLoader>
       

@@ -214,7 +214,7 @@ const capitalizeWords = (value?: string) =>
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-4">
         <input
-          placeholder="Search name, email or phone"
+          placeholder="Search Name, Email Or Phone"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className=" border rounded-lg px-3 py-2
@@ -236,7 +236,7 @@ const capitalizeWords = (value?: string) =>
       <span className="truncate text-base text-black">
         {dateRange[0].startDate
           ? `${dateRange[0].startDate.toDateString()} → ${dateRange[0].endDate?.toDateString()}`
-          : "Filter by Date"}
+          : "Filter By Date"}
       </span>
       <ChevronDown className="w-4 h-4 text-black" />
     </div>
@@ -298,6 +298,7 @@ const capitalizeWords = (value?: string) =>
         <table className="min-w-[1200px] w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
+              <th className="p-3 text-left">SR No.</th>
               <th className="p-3 text-left">Name</th>
               <th className="p-3 text-left">Email</th>
               <th className="p-3 text-left">Phone</th>
@@ -309,8 +310,9 @@ const capitalizeWords = (value?: string) =>
             </tr>
           </thead>
           <tbody>
-           {currentApps.map((a) => (
+           {currentApps.map((a,i) => (
               <tr key={a.id} className="border-t">
+                 <td className="p-3 capitalize">{indexOfFirst + i + 1}</td>
                 <td className="p-3 capitalize">{a.name}</td>
                 <td className="p-3"> 
                  <a

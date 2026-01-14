@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import BlogForm from "../../components/BlogForm";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import BlogForm from "../../components/BlogForm";
 import Button from "@/app/components/Button";
-import { toast } from "react-hot-toast"; 
-export default function EditBlogPage({ params }: { params: { slug: string } }) {
+import { toast } from "react-hot-toast";
+
+export default function EditBlogPage() {
   const router = useRouter();
-  const slug = params.slug;
+  const params = useParams(); // ✅ REQUIRED
+  const slug = params.slug as string; // ✅ SAFE
 
   const [blog, setBlog] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function EditBlogPage({ params }: { params: { slug: string } }) {
     async function fetchItem() {
       try {
         if (!slug) {
-          alert("Invalid slug");
+          toast.error("Invalid blog slug");
           router.push("/admin/blogs");
           return;
         }
@@ -27,28 +29,29 @@ export default function EditBlogPage({ params }: { params: { slug: string } }) {
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          alert("Blog not found");
+          toast.error("Blog not found");
           router.push("/admin/blogs");
           return;
         }
 
-        const data = snap.docs[0].data();
+        const doc = snap.docs[0];
+        const data = doc.data();
 
-        // ✅ FIX: ensure description and scheduledAt are passed properly
         setBlog({
-          id: snap.docs[0].id,
+          id: doc.id,
           slug: data.slug,
           title: data.title,
-          description: data.description ?? "", // ✅ will load in editor
+          description: data.description ?? "",
           imageUrl: data.imageUrl ?? "",
           category: data.category ?? "",
           scheduledAt: data.scheduledAt
-            ? new Date(data.scheduledAt.seconds * 1000) // ✅ will NOT reset
+            ? new Date(data.scheduledAt.seconds * 1000)
             : null,
         });
       } catch (err) {
         console.error("Error loading blog:", err);
-        alert("Failed to load blog");
+        toast.error("Failed to load blog");
+        router.push("/admin/blogs");
       } finally {
         setLoading(false);
       }
@@ -57,18 +60,19 @@ export default function EditBlogPage({ params }: { params: { slug: string } }) {
     fetchItem();
   }, [slug, router]);
 
-  if (loading || !blog) return null;
+  if (loading) return <p>Loading...</p>;
+  if (!blog) return null;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-semibold">Edit Blog</h3>
-        <Button
-  onClick={() => router.back()}
- className="text-black"
-  text="Back"
-/>
 
+        <Button
+          onClick={() => router.back()}
+          text="Back"
+          className="text-black"
+        />
       </div>
 
       <BlogForm
@@ -76,13 +80,13 @@ export default function EditBlogPage({ params }: { params: { slug: string } }) {
           id: blog.id,
           slug: blog.slug,
           title: blog.title,
-          description: blog.description, // ✅ FIXED
+          description: blog.description,
           imageUrl: blog.imageUrl,
           category: blog.category,
-          scheduledAt: blog.scheduledAt, // ✅ FIXED
+          scheduledAt: blog.scheduledAt,
         }}
         onSuccess={() => {
-         toast.success("Blog updated successfully");
+          toast.success("Blog updated successfully");
           router.push("/admin/blogs");
         }}
       />

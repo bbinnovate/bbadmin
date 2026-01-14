@@ -397,7 +397,7 @@ useEffect(() => {
      >
 
          <div className="bg-white/50 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-300 flex-1">
-            <h2 className="text-2xl font-semibold mb-4">Services Management</h2>
+            <h3 className=" font-semibold mb-4">Services Management</h3>
             <div className="mb-6 flex flex-col sm:flex-row gap-4">
   <input
     type="text"
@@ -507,7 +507,7 @@ useEffect(() => {
 
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-2xl font-semibold capitalize">{selectedDept} Questions</h2>
-                  <a href={`/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
+                  <a href={`https://bombayblokes.com/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
                     Preview Page <ExternalLink size={16} />
                   </a>
                 </div>

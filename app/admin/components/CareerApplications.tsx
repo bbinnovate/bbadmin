@@ -252,7 +252,7 @@ const handleExportCSV = () => {
     {/* 🔍 Search */}
     <input
       type="text"
-      placeholder="Search by name, position, phone or availability..."
+      placeholder="Search by Name, Position, Phone Or Availability..."
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
       className="
@@ -285,7 +285,7 @@ const handleExportCSV = () => {
       ? dateRange[0].endDate
         ? `${dateRange[0].startDate.toDateString()} → ${dateRange[0].endDate.toDateString()}`
         : dateRange[0].startDate.toDateString()
-      : "Filter by Date"}
+      : "Filter By Date"}
   </span>
 
   {/* Chevron */}

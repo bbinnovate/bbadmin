@@ -1,5 +1,5 @@
 import React from 'react'
-import CalculatorApplications from '../components/CalculatorForm';
+import CalculatorApplications from '../components/CalculatorApplications';
 import SmoothScroll from '@/app/components/SmoothScroll'
 import { Metadata } from 'next'
 

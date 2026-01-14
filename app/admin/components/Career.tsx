@@ -13,12 +13,20 @@ interface Career {
   title: string;
   description: string;
   isImmediate: boolean;
+  isFeatured: boolean;
   postedAt: any; // Firestore timestamp
 }
 
 export default function Career() {
   const [careers, setCareers] = useState<Career[]>([]);
   const [loading, setLoading] = useState(true);
+  const [featuredId, setFeaturedId] = useState<string | null>(null);
+
+useEffect(() => {
+  const current = careers.find(c => c.isFeatured);
+  if (current) setFeaturedId(current.id);
+}, [careers]);
+
 
   useEffect(() => {
     const fetchCareers = async () => {
@@ -61,7 +69,7 @@ export default function Career() {
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold">Careers Management</h3>
 
@@ -83,6 +91,8 @@ export default function Career() {
               key={career.id}
               career={career}
               onDelete={handleDelete}
+              featuredId={featuredId}
+                          setFeaturedId={setFeaturedId}
             />
           ))}
         </div>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 interface QuoteItem {
   type: string;
   label: string;
+  question: string;
   value: string;
   price: number;
 }

@@ -97,7 +97,7 @@ const AllCalculator = () => {
       {/* LINK */}
       <td className="px-4 py-3 align-middle">
         <a
-          href={`/${calc.id}`}
+          href={`https://bombayblokes.com/${calc.id}`}
           target="_blank"
           className="text-blue-600 hover:underline inline-flex items-center gap-1"
         >

@@ -8,6 +8,7 @@ export async function sendEmail(options: {
   html: string;
   fromName?: string;
   fromAddress?: string;
+  replyTo?: string;
 }) {
   try {
     const {
