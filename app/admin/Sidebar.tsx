@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -31,6 +32,9 @@ export default function Sidebar() {
   const [calculatorCount, setcalculatorCount] = useState(0);
   const [clientCount, setClientCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
+  const [permissions, setPermissions] = useState<string[]>([]);
+  const [role, setRole] = useState<string>("user");
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   async function handleLogout() {
     await logout();
@@ -67,6 +71,51 @@ useEffect(() => {
 }, []);
 
 
+
+useEffect(() => {
+  const auth = getAuth();
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    setCurrentUser(user);
+  });
+
+  return () => unsubscribe();
+}, []);
+
+useEffect(() => {
+  const fetchMe = async () => {
+    if (!currentUser) return;
+    const snap = await getDocs(collection(db, "users"));
+    const me = snap.docs.find(d => d.data().email === currentUser.email);
+
+if (!me) return;
+
+setRole(me.data().role || "user");
+setPermissions(getEffectivePermissions(me.data().permissions));
+
+  };
+
+  fetchMe();
+}, [currentUser]);
+
+const canAccess = (key: string) => {
+  if (role !== "admin") return false;
+  return permissions.includes("all") || permissions.includes(key);
+};
+
+
+
+const normalizePermissions = (p: any): string[] => {
+  if (Array.isArray(p)) return p;
+  if (p === "all") return ["all"];
+  return [];
+};
+
+const getEffectivePermissions = (p: any): string[] => {
+  const perms = normalizePermissions(p);
+  return perms.length > 1 ? perms.filter(x => x !== "all") : perms;
+};
+
+
   return (
     <aside className="w-66 bg-black text-white h-screen fixed left-0 top-0 flex flex-col rounded-r-[20px]">
       <h3 className="p-4 font-bold border-b border-gray-800">Admin Panel</h3>
@@ -86,6 +135,7 @@ useEffect(() => {
         </Link>
 
         {/* Blogs */}
+        {canAccess("blogs") && (
         <Link
           href="/admin/blogs"
           className={`flex items-center gap-3 px-2 py-2 rounded-lg  text-[15px]${
@@ -97,8 +147,10 @@ useEffect(() => {
           <FileText size={18} />
           Blogs
         </Link>
+        )}
 
         {/* Careers */}
+        {canAccess("career") && (
         <div className="space-y-1">
           <button
             onClick={() => setCareerOpen(!careerOpen)}
@@ -152,8 +204,10 @@ useEffect(() => {
             </div>
           )}
         </div>
+        )}
 
         {/* Contact Applications */}
+        {canAccess("contact") && (
         <Link
           href="/admin/contact-applications"
           className={`flex items-center justify-between px-2 py-2 rounded-lg ${
@@ -177,8 +231,10 @@ useEffect(() => {
             {contactCount}
           </span>
         </Link>
+        )}
 
         {/* Client Applications */}
+        {canAccess("clients") && (
         <Link
           href="/admin/client-applications"
           className={`flex items-center justify-between px-2 py-2 rounded-lg text-[15px] ${
@@ -202,9 +258,11 @@ useEffect(() => {
             {clientCount}
           </span>
         </Link>
+        )}
 
   
         {/* Calculator */}
+        {canAccess("calculator") && (
         <div className="space-y-1">
           <button
             onClick={() => setcalculatorOpen(!calculatorOpen)}
@@ -270,9 +328,11 @@ useEffect(() => {
             </div>
           )}
         </div>
+        )}
 
 
         {/* Users */}
+        {canAccess("users") && (
         <Link
           href="/admin/users"
           className={`flex items-center gap-3 px-2 py-2 rounded-lg text-[15px] ${
@@ -284,6 +344,7 @@ useEffect(() => {
           <Users size={18} />
           Users
         </Link>
+        )}
       </nav>
 
       {/* Logout */}

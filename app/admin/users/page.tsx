@@ -3,6 +3,7 @@ import Users from '../components/Users'
 import SmoothScroll from '@/app/components/SmoothScroll'
 import { Metadata } from 'next'
 
+
 export const metadata: Metadata = {
   title: "Bombay Blokes | Admin Users",
   description:
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
 
 
 const Index = () => {
+
+  
+
   return (
     <div>
       <SmoothScroll>
