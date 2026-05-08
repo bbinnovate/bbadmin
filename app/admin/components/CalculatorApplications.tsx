@@ -178,41 +178,66 @@ const capitalizeWords = (value?: string) =>
 
 
 const handleExportCSV = () => {
-  const { startDate, endDate } = exportRange[0];
-  if (!startDate || !endDate) return;
+  let dataToExport = [...filtered]; // ✅ EXPORT WHAT TABLE SHOWS
 
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(endDate);
-  end.setHours(23, 59, 59, 999);
-
-  const filtered = apps.filter((a) => {
-    if (!a.createdAt) return false;
-    const d = a.createdAt.seconds * 1000;
-    return d >= start.getTime() && d <= end.getTime();
-  });
-
-  if (!filtered.length) {
-    alert("No records found for selected date range");
+  if (!dataToExport.length) {
+    alert("No records found for current filters");
     return;
   }
 
+  // -----------------------------
+  // 1️⃣ Apply Export Popup Date (if selected)
+  // -----------------------------
+  const exportStart = exportRange[0]?.startDate;
+  const exportEnd = exportRange[0]?.endDate;
+
+  let usedExportDate = false;
+
+  if (
+    exportStart instanceof Date &&
+    exportEnd instanceof Date &&
+    !isNaN(exportStart.getTime()) &&
+    !isNaN(exportEnd.getTime())
+  ) {
+    const start = new Date(exportStart);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(exportEnd);
+    end.setHours(23, 59, 59, 999);
+
+    const filteredByExportDate = dataToExport.filter((a) => {
+      if (!a.createdAt) return false;
+      const d = a.createdAt.seconds * 1000;
+      return d >= start.getTime() && d <= end.getTime();
+    });
+
+    if (filteredByExportDate.length) {
+      dataToExport = filteredByExportDate;
+      usedExportDate = true;
+    }
+  }
+
+  // -----------------------------
+  // 2️⃣ Build CSV
+  // -----------------------------
   const csv =
     "Date,Name,Email,Phone,Service,Questions,Final Price\n" +
-    filtered
+    dataToExport
       .map((a) =>
         [
-          new Date(a.createdAt!.seconds * 1000).toLocaleDateString("en-GB"),
+          formatDate(a.createdAt?.seconds),
           capitalizeWords(a.name || "-"),
           a.email || "-",
           a.phone || "-",
           capitalizeWords(a.serviceCalculator),
           a.quote
             ?.slice(0, 3)
-            .map((q) => `${capitalizeWords(q.type)}: ${capitalizeWords(q.value)}`)
+            .map(
+              (q) =>
+                `${capitalizeWords(q.type)}: ${capitalizeWords(q.value)}`
+            )
             .join(" | "),
-          `${a.finalPrice}`,
+          `₹${Number(a.finalPrice || 0).toLocaleString("en-IN")}`,
         ]
           .map((v) => `"${v}"`)
           .join(",")
@@ -222,8 +247,67 @@ const handleExportCSV = () => {
   const blob = new Blob([csv], { type: "text/csv" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `Calculator Applications ${formatDDMMYYYY(start)} to ${formatDDMMYYYY(end)}.csv`;
+
+  // -----------------------------
+  // 3️⃣ Professional Filename Logic
+  // -----------------------------
+  const parts: string[] = ["Calculator Applications"];
+
+  if (selectedService.trim()) {
+    parts.push(capitalizeWords(selectedService));
+  }
+
+  if (searchTerm.trim()) {
+    parts.push(`Search-${searchTerm.trim().replace(/\s+/g, "_")}`);
+  }
+
+  const getMinMaxDates = (apps: CalculatorApp[]) => {
+    const dates = apps
+      .filter((a) => a.createdAt?.seconds)
+      .map((a) => a.createdAt!.seconds * 1000);
+
+    if (!dates.length) return null;
+
+    const min = new Date(Math.min(...dates));
+    const max = new Date(Math.max(...dates));
+
+    return {
+      minLabel: formatDDMMYYYY(min),
+      maxLabel: formatDDMMYYYY(max),
+    };
+  };
+
+  // Date priority:
+  // 1. Export popup date
+  // 2. Filter date
+  // 3. Visible data range
+
+  if (usedExportDate && exportStart && exportEnd) {
+    parts.push(
+      `${formatDDMMYYYY(exportStart)} to ${formatDDMMYYYY(exportEnd)}`
+    );
+  } else if (
+    dateRange[0]?.startDate &&
+    dateRange[0]?.endDate
+  ) {
+    parts.push(
+      `${formatDDMMYYYY(dateRange[0].startDate)} to ${formatDDMMYYYY(
+        dateRange[0].endDate
+      )}`
+    );
+  } else {
+    const range = getMinMaxDates(dataToExport);
+    if (range) {
+      parts.push(`${range.minLabel} to ${range.maxLabel}`);
+    }
+  }
+
+  const fileName = `${parts.join(" - ")}.csv`;
+
+  link.download = fileName;
   link.click();
+
+  setShowExportRange(false);
 };
 
 

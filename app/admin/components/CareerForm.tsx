@@ -44,7 +44,7 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
   const [category, setCategory] = useState(existingCareer?.category || "");
   const [isImmediate, setIsImmediate] = useState(existingCareer?.isImmediate || false);
   const [loading, setLoading] = useState(false);
-
+  const [status, setStatus] = useState("published");
   const editorRef = useRef<EditorJS | null>(null);
   const editorContainer = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
@@ -92,6 +92,7 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
         title,
         description: cleanData,
         category,
+        status,
         isImmediate,
         ...(existingCareer ? { updatedAt: serverTimestamp() } : { postedAt: serverTimestamp() }),
       };
@@ -175,7 +176,27 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
 
       {/* {error && <div className="text-red-500 text-sm">{error}</div>} */}
 
-      <Button type="submit" disabled={loading} text={loading ? "Saving..." : "Save Career"} />
+      <div className="flex gap-3">
+
+
+
+        <Button
+                 type="submit"
+    onClick={() => setStatus("draft")}
+                  text=" Save Draft"
+                  className="text-black font-semibold"
+                />
+
+                <Button
+                          type="submit"
+    onClick={() => setStatus("published")}
+                          text="Publish Career"
+                          className="text-black font-semibold"
+                        />
+
+
+
+</div>
     </form>
   );
 }

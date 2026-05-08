@@ -20,7 +20,12 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-export default function Sidebar() {
+
+interface SidebarProps { 
+  onLogoutClick: () => void;
+}
+
+export default function Sidebar({ onLogoutClick }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
@@ -35,6 +40,8 @@ export default function Sidebar() {
   const [permissions, setPermissions] = useState<string[]>([]);
   const [role, setRole] = useState<string>("user");
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authReady, setAuthReady] = useState(false);
+
 
   async function handleLogout() {
     await logout();
@@ -76,10 +83,12 @@ useEffect(() => {
   const auth = getAuth();
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     setCurrentUser(user);
+    setAuthReady(true); // ✅ mark ready
   });
 
   return () => unsubscribe();
 }, []);
+
 
 useEffect(() => {
   const fetchMe = async () => {
@@ -99,8 +108,13 @@ setPermissions(getEffectivePermissions(me.data().permissions));
 
 const canAccess = (key: string) => {
   if (role !== "admin") return false;
-  return permissions.includes("all") || permissions.includes(key);
+
+  return (
+    permissions.includes("all") ||
+    permissions.includes(key)
+  );
 };
+
 
 
 
@@ -120,6 +134,8 @@ const getEffectivePermissions = (p: any): string[] => {
     <aside className="w-66 bg-black text-white h-screen fixed left-0 top-0 flex flex-col rounded-r-[20px]">
       <h3 className="p-4 font-bold border-b border-gray-800">Admin Panel</h3>
 
+      {authReady && (
+
       <nav className="flex-1 p-3 space-y-1">
         {/* Dashboard */}
         <Link
@@ -137,16 +153,16 @@ const getEffectivePermissions = (p: any): string[] => {
         {/* Blogs */}
         {canAccess("blogs") && (
         <Link
-          href="/admin/blogs"
-          className={`flex items-center gap-3 px-2 py-2 rounded-lg  text-[15px]${
-            pathname === "/admin/blogs"
-              ? "bg-[var(--color-highlight)] text-black"
-              : "hover:bg-gray-800"
-          }`}
-        >
-          <FileText size={18} />
-          Blogs
-        </Link>
+  href="/admin/blogs"
+  className={`flex items-center gap-3 px-2 py-2 rounded-lg text-[15px] ${
+    pathname.startsWith("/admin/blogs")
+      ? "bg-[var(--color-highlight)] text-black"
+      : "hover:bg-gray-800"
+  }`}
+>
+  <FileText size={18} />
+  Blogs
+</Link>
         )}
 
         {/* Careers */}
@@ -173,7 +189,7 @@ const getEffectivePermissions = (p: any): string[] => {
               <Link
                 href="/admin/careers"
                 className={`block px-2 py-2 rounded-lg text-sm ${
-                  pathname === "/admin/careers"
+                  pathname.startsWith("/admin/careers")
                     ? "bg-[var(--color-highlight)] text-black"
                     : "hover:bg-gray-800"
                 }`}
@@ -347,36 +363,17 @@ const getEffectivePermissions = (p: any): string[] => {
         )}
       </nav>
 
+      )}
+
       {/* Logout */}
       <button
-        onClick={() => setConfirm(true)}
+       onClick={onLogoutClick}
         className="m-4 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-2 rounded-lg"
       >
         <LogOut size={16} /> Logout
       </button>
 
-      {/* Logout Confirmation */}
-      {confirm && (
-        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-          <div className="bg-white text-black rounded-lg p-6 text-center space-y-4">
-            <p className="font-semibold">Are you sure you want to logout?</p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setConfirm(false)}
-                className="bg-gray-300 px-4 py-2 rounded"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     
     </aside>
   );
 }

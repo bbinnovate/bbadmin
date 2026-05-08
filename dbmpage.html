@@ -1,0 +1,1220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Diamond Business Mastermind — Launch &amp; Scale Your Jewelry Business</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+
+<!-- Lucide icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand:   '#0A5A67',
+          accent:  '#29B59B',
+          dark:    '#141414',
+          surface: '#161819',
+          cream:   '#FAF5EA',
+          mid:     '#494949',
+        },
+        fontFamily: {
+          display: ['"Clash Display"', 'sans-serif'],
+          body:    ['Nunito', 'sans-serif'],
+          ui:      ['Montserrat', 'sans-serif'],
+        },
+        boxShadow: {
+          'soft': '0 1px 2px rgba(20,20,20,0.04), 0 8px 24px rgba(20,20,20,0.06)',
+          'lift': '0 12px 32px rgba(10,90,103,0.12), 0 2px 6px rgba(20,20,20,0.05)',
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    color: #141414;
+    background: #FFFFFF;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4 { font-family: 'Clash Display', sans-serif; letter-spacing: -0.01em; text-wrap: balance; }
+  .font-ui    { font-family: 'Montserrat', sans-serif; }
+
+  .hero-glow {
+    background:
+      radial-gradient(ellipse 70% 55% at 70% 30%, rgba(41,181,155,0.22), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 15% 80%, rgba(10,90,103,0.45), transparent 65%),
+      #161819;
+  }
+
+  .bg-grid-dark { background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 22px 22px; }
+  .bg-grid-light { background-image: radial-gradient(rgba(10,90,103,0.10) 1px, transparent 1px); background-size: 22px 22px; }
+
+  .card {
+    position: relative;
+    background: #fff;
+    border: 1px solid rgba(20,20,20,0.08);
+    border-radius: 14px;
+    transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+    overflow: hidden;
+  }
+  .card::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:3px;
+    background: linear-gradient(90deg, #0A5A67, #29B59B);
+    transform: scaleX(0); transform-origin: left center;
+    transition: transform .4s ease;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(10,90,103,0.12), 0 2px 6px rgba(20,20,20,0.05);
+    border-color: rgba(10,90,103,0.18);
+  }
+  .card:hover::before{ transform: scaleX(1); }
+
+  .card-dark { background: #1c1f20; border-color: rgba(255,255,255,0.08); color: #f4f0e6; }
+  .card-dark:hover { border-color: rgba(41,181,155,0.4); }
+
+  .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    padding: 0.95rem 1.6rem;
+    border-radius: 999px;
+    transition: all .25s ease;
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+  .btn-primary { background: #0A5A67; color: #fff; }
+  .btn-primary:hover { background: #29B59B; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: #0A5A67; border: 1.5px solid #0A5A67; }
+  .btn-outline:hover { background: #0A5A67; color: #fff; }
+  .btn-outline-light { background: transparent; color: #FAF5EA; border: 1.5px solid rgba(250,245,234,0.5); }
+  .btn-outline-light:hover { background: #FAF5EA; color: #0A5A67; border-color: #FAF5EA; }
+
+  .pill {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+  }
+
+  .quote-mark {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 8rem; line-height: 0.7;
+    color: #0A5A67; opacity: 0.18;
+  }
+
+  .tab-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 1rem 0.25rem;
+    border-bottom: 2px solid transparent;
+    color: #494949;
+    transition: all .2s ease;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  .tab-btn.active { color: #141414; border-color: #0A5A67; }
+  .tab-btn:hover { color: #0A5A67; }
+
+  .faq-item .faq-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease, padding .4s ease;
+  }
+  .faq-item.open .faq-body { max-height: 480px; padding-bottom: 1.25rem; }
+  .faq-item .faq-icon { transition: transform .35s ease; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  .marquee-track { animation: marquee 38s linear infinite; will-change: transform; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .stripes {
+    background-image: repeating-linear-gradient(135deg, rgba(10,90,103,0.06) 0 12px, rgba(10,90,103,0.02) 12px 24px);
+  }
+  .stripes-dark {
+    background-image: repeating-linear-gradient(135deg, rgba(41,181,155,0.10) 0 12px, rgba(41,181,155,0.04) 12px 24px);
+  }
+
+  .diamond-divider {
+    display: flex; align-items: center; gap: 1rem;
+    color: rgba(20,20,20,0.2);
+  }
+  .diamond-divider::before, .diamond-divider::after {
+    content: ''; flex: 1; height: 1px; background: currentColor;
+  }
+
+  .persona-quote {
+    border-left: 3px solid #0A5A67;
+    padding: 0.85rem 1rem;
+    background: rgba(10,90,103,0.04);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .ring-stamp {
+    position: absolute; right: -22px; top: -22px;
+    width: 110px; height: 110px;
+    background: #29B59B; color: #141414;
+    border-radius: 999px;
+    display: grid; place-items: center; text-align: center;
+    font-family: 'Clash Display', sans-serif;
+    font-weight: 600; line-height: 1;
+    transform: rotate(-8deg);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  }
+
+  .pillar-num {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 5rem; line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px #0A5A67;
+  }
+
+  @media (max-width: 640px){
+    .quote-mark { font-size: 5rem; }
+    .pillar-num { font-size: 4rem; }
+  }
+
+  .diamond-shape {
+    width: 10px; height: 10px;
+    background: #0A5A67;
+    transform: rotate(45deg);
+    display: inline-block;
+  }
+
+  /* Snapshot stat block */
+  .snapshot-cell {
+    position: relative;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .snapshot-cell:last-child { border-right: none; }
+  @media (max-width: 768px){
+    .snapshot-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .snapshot-cell:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+
+<body class="font-body text-dark">
+
+<!-- ============== NAV ============== -->
+<header class="sticky top-0 z-50 bg-white/85 backdrop-blur border-b border-black/5">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2">
+      <span class="diamond-shape"></span>
+      <span class="font-display font-semibold text-lg tracking-tight">Diamond Business Mastermind</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-ui text-sm text-mid">
+      <a href="#about" class="hover:text-brand transition">About</a>
+      <a href="#personas" class="hover:text-brand transition">Who It's For</a>
+      <a href="#mentor" class="hover:text-brand transition">Mentor</a>
+      <a href="#curriculum" class="hover:text-brand transition">Curriculum</a>
+      <a href="#stories" class="hover:text-brand transition">Success Stories</a>
+      <a href="#faq" class="hover:text-brand transition">FAQ</a>
+    </nav>
+    <a href="#apply" class="btn btn-primary !py-2.5 !px-5 text-xs">Apply Now</a>
+  </div>
+</header>
+
+<!-- ============== PART 1 — HERO + FORM ============== -->
+<section id="apply" class="hero-glow text-cream relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none"></div>
+
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8 pt-20 md:pt-24 pb-24 md:pb-28">
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7">
+        <span class="pill bg-white/10 text-cream border border-white/10">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+          Strategy · Sourcing · Scale
+        </span>
+
+        <h1 class="font-display font-semibold text-[clamp(2.4rem,6vw,4.6rem)] leading-[1.02] mt-6">
+          Ready to <span class="italic" style="color:#29B59B">Launch</span> or
+          <span class="italic" style="color:#29B59B">Scale</span> your Jewelry Business?
+        </h1>
+
+        <p class="font-body text-lg md:text-xl mt-6 max-w-xl text-cream/75">
+          A structured, step-by-step approach to build, grow, and scale your jewelry business
+          without confusion or guesswork.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mt-9">
+          <a href="#brochure" class="btn btn-outline-light">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Download Brochure
+          </a>
+          <a href="#hero-form" class="btn btn-primary" style="background:#29B59B;color:#0A2024">
+            Apply Now
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div class="mt-8 flex items-center gap-4">
+          <div class="flex -space-x-2">
+            <img class="w-8 h-8 rounded-full border-2 border-surface" src="https://placehold.co/64x64/0A5A67/FAF5EA?text=A" alt="">
+            <img class="w-8 h-8 rounded-full border-2 border-surface" src="https://placehold.co/64x64/29B59B/141414?text=S" alt="">
+            <img class="w-8 h-8 rounded-full border-2 border-surface" src="https://placehold.co/64x64/494949/FAF5EA?text=P" alt="">
+            <img class="w-8 h-8 rounded-full border-2 border-surface" src="https://placehold.co/64x64/0A5A67/FAF5EA?text=N" alt="">
+          </div>
+          <p class="font-body text-sm text-cream/75">
+            <span class="text-cream font-semibold">2,000+ JK alumni</span> · 100+ jewelry startups mentored
+          </p>
+        </div>
+      </div>
+
+      <!-- FORM on right -->
+      <div class="lg:col-span-5" id="hero-form">
+        <div class="rounded-3xl overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur p-2">
+          <div class="px-5 py-4">
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-accent">Apply Now</span>
+            <h3 class="font-display font-semibold text-xl text-cream mt-1">Reserve your seat in the next cohort</h3>
+          </div>
+          <div style="width: 100%; max-width: 100%; overflow: hidden; border-radius: 18px; background:#fff;">
+            <iframe
+              id="zohoFormFrame"
+              aria-label="Diamond Business Mastermind"
+              frameborder="0"
+              style="width: 100%; height: 550px; border: none;"
+              scrolling="no"
+              allowtransparency="true"
+              sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation"
+              src="https://forms.zohopublic.com/learnathonworldcom/form/DiamondBusinessMastermind/formperma/kXImbY7D10C3feKKvtlJKP1YE-qg95LwvV5RcE5TdjM"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 2 — PROGRAM SNAPSHOT STRIP ============== -->
+<section class="bg-surface text-cream border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4">
+      <div class="snapshot-cell">
+        <div class="flex items-center gap-2 text-accent">
+          <i data-lucide="clock" class="w-4 h-4"></i>
+          <span class="font-ui text-[11px] uppercase tracking-widest">Duration</span>
+        </div>
+        <div class="font-display font-semibold text-3xl md:text-4xl mt-3">8–10 Weeks</div>
+        <div class="font-ui text-xs text-cream/60 mt-1">Immersive, sequenced learning</div>
+      </div>
+      <div class="snapshot-cell">
+        <div class="flex items-center gap-2 text-accent">
+          <i data-lucide="layers" class="w-4 h-4"></i>
+          <span class="font-ui text-[11px] uppercase tracking-widest">Format</span>
+        </div>
+        <div class="font-display font-semibold text-3xl md:text-4xl mt-3">Hybrid Learning</div>
+        <div class="font-ui text-xs text-cream/60 mt-1">Online + on-campus</div>
+      </div>
+      <div class="snapshot-cell">
+        <div class="flex items-center gap-2 text-accent">
+          <i data-lucide="route" class="w-4 h-4"></i>
+          <span class="font-ui text-[11px] uppercase tracking-widest">Journey</span>
+        </div>
+        <div class="font-display font-semibold text-3xl md:text-4xl mt-3">Personalised</div>
+        <div class="font-ui text-xs text-cream/60 mt-1">Tailored to your stage</div>
+      </div>
+      <div class="snapshot-cell">
+        <div class="flex items-center gap-2 text-accent">
+          <i data-lucide="briefcase" class="w-4 h-4"></i>
+          <span class="font-ui text-[11px] uppercase tracking-widest">Support</span>
+        </div>
+        <div class="font-display font-semibold text-3xl md:text-4xl mt-3">Business Consulting</div>
+        <div class="font-ui text-xs text-cream/60 mt-1">Throughout the program</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 3 — WHAT IS DBM + WHO IS IT FOR ============== -->
+<section id="about" class="bg-cream relative">
+  <div class="absolute inset-0 bg-grid-light opacity-40 pointer-events-none"></div>
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+
+    <div class="grid lg:grid-cols-12 gap-12 reveal">
+      <div class="lg:col-span-5">
+        <span class="pill bg-brand/10 text-brand">
+          <span class="diamond-shape !w-[7px] !h-[7px]"></span>
+          About the Program
+        </span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.05] mt-5 text-dark">
+          What is the Diamond Business Mastermind?
+        </h2>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="card !p-8 md:!p-10">
+          <p class="text-lg md:text-xl leading-relaxed text-dark/85">
+            The Diamond Business Mastermind Program helps you as a jewelry entrepreneur or professional to
+            <span class="font-semibold text-brand">optimize your sourcing</span>,
+            <span class="font-semibold text-brand">scale your business or career</span> and
+            <span class="font-semibold text-brand">automate your jewelry business</span>
+            in a systematic manner and a cost-efficient manner.
+          </p>
+
+          <div class="diamond-divider my-8"><span class="diamond-shape"></span></div>
+
+          <h3 class="font-display font-semibold text-2xl text-dark">Who is the Diamond Business Mastermind Program for?</h3>
+          <p class="text-mid mt-3 leading-relaxed">
+            This program is designed for gold jewelry business owners, jewelry startups, scaling retailers,
+            export businesses, and individuals looking to start a jewelry business or side hustle in diamonds.
+          </p>
+
+          <div class="flex flex-wrap gap-2 mt-6">
+            <span class="pill border border-brand/30 text-brand bg-white">Gold Jewellers</span>
+            <span class="pill border border-brand/30 text-brand bg-white">Startups</span>
+            <span class="pill border border-brand/30 text-brand bg-white">Scaling Retailers</span>
+            <span class="pill border border-brand/30 text-brand bg-white">Exporters</span>
+            <span class="pill border border-brand/30 text-brand bg-white">Side Hustlers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 4 — WHERE DO YOU START (transitional band, ref-style) ============== -->
+<section class="bg-white relative overflow-hidden">
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent"></div>
+
+  <div class="max-w-6xl mx-auto px-5 md:px-8 py-24 md:py-32 text-center relative">
+    <!-- decorative side images -->
+    <div class="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-40 lg:w-56 aspect-[4/5] rounded-2xl overflow-hidden stripes border border-black/5 reveal">
+      <div class="w-full h-full grid place-items-center">
+        <span class="font-ui text-[9px] uppercase tracking-widest text-brand/50">Photo</span>
+      </div>
+    </div>
+    <div class="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-40 lg:w-56 aspect-[4/5] rounded-2xl overflow-hidden stripes border border-black/5 reveal">
+      <div class="w-full h-full grid place-items-center">
+        <span class="font-ui text-[9px] uppercase tracking-widest text-brand/50">Photo</span>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto reveal relative">
+      <span class="pill bg-brand/10 text-brand">
+        <span class="diamond-shape !w-[7px] !h-[7px]"></span>
+        The Question Every Founder Asks
+      </span>
+
+      <h2 class="font-display font-semibold text-[clamp(2.2rem,5.2vw,4.4rem)] leading-[1.02] mt-7 text-dark">
+        You <span class="italic text-brand">want to launch</span> or
+        <span class="italic text-brand">scale</span> your jewelry business.
+      </h2>
+
+      <div class="mt-8 inline-flex items-center gap-3">
+        <span class="h-px w-10 bg-dark/20"></span>
+        <span class="font-ui text-[11px] uppercase tracking-[0.25em] text-mid">but</span>
+        <span class="h-px w-10 bg-dark/20"></span>
+      </div>
+
+      <h3 class="font-display font-semibold text-[clamp(2rem,4.6vw,3.8rem)] leading-[1.05] mt-6 text-dark">
+        Where do you <span class="italic text-brand">start from?</span>
+      </h3>
+
+      <p class="text-mid text-lg mt-7 max-w-xl mx-auto leading-relaxed">
+        DBM gives you a structured, sequenced way through the noise — so you stop guessing and start building.
+      </p>
+
+      <div class="mt-10">
+        <a href="#hero-form" class="btn btn-primary">
+          Start Your Journey
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- arrow indicator -->
+    <div class="mt-16 flex justify-center reveal">
+      <div class="w-10 h-10 rounded-full border border-brand/30 grid place-items-center text-brand">
+        <i data-lucide="arrow-down" class="w-4 h-4"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 5 — WHETHER YOU ARE A ============== -->
+<section id="personas" class="bg-cream relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="text-center max-w-3xl mx-auto reveal">
+      <span class="pill bg-brand/10 text-brand"><span class="diamond-shape !w-[7px] !h-[7px]"></span>Whether You Are A…</span>
+      <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+        Built for every kind of jewelry business
+      </h2>
+      <p class="text-mid mt-4 text-lg">
+        Six distinct paths. One program. Tailored consulting that meets you exactly where you are.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5 md:gap-6 mt-14">
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 01</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Gold Jewelry Business Owners</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="coins" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Learn how to move from a low-profit, slow-payment business to a diversified and more profitable
+          diamond &amp; studded jewelry model, with better pricing and sourcing clarity.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "We were heavily dependent on low-margin gold and slow payments, but now we've shifted to a
+            more profitable diamond model with clear pricing and better margins."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Darshit Jain · Chintamani Gold</div>
+        </div>
+      </article>
+
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 02</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Jewelry Startups</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="rocket" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Learn product fundamentals, build a clear business and marketing model, launch confidently,
+          and acquire your first customers.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "By understanding our product deeply and using the right marketing and launch strategy,
+            we were able to acquire customers confidently and scale Reia Diamonds into multiple stores."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Prapanjj Kota · Reia Diamonds</div>
+        </div>
+      </article>
+
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 03</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Businesses Looking to Scale &amp; Market</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="trending-up" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Create a marketing blueprint, identify the right target audience, and build strategies focused
+          on execution and sustainable growth. Learn to build systems to automate your business.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "We were running the business without a clear growth plan, but now we have a structured
+            strategy and systems for consistent scaling."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Asish Jain · Sumangali Jewellers</div>
+        </div>
+      </article>
+
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 04</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Jewelry Export Businesses</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="globe-2" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Understand export compliance, global market dynamics, product–market fit, target country
+          research, and proven ways to acquire international customers.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "From a fresher with no export clarity to building a 100–150 member export factory with
+            strong global market understanding."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Shubham Lohade · Arriva Jewellery</div>
+        </div>
+      </article>
+
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 05</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Side Hustlers</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Learn how to set up a D2C jewelry business covering sourcing, marketing, and sales —
+          designed to work with minimal daily involvement.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "From having no clear starting point to building a structured D2C jewelry business
+            that runs with minimal daily involvement."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Nikita Jain · Jewelsagabynikitajain</div>
+        </div>
+      </article>
+
+      <article class="card !p-7 md:!p-8 reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Persona 06</span>
+            <h3 class="font-display font-semibold text-2xl md:text-3xl mt-2">Product &amp; Purchase Optimization</h3>
+          </div>
+          <span class="w-11 h-11 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="gem" class="w-5 h-5"></i>
+          </span>
+        </div>
+        <p class="text-mid mt-4 leading-relaxed">
+          Understand diamonds beyond lab reports, and learn how to procure quality diamonds at the
+          right price with confidence.
+        </p>
+        <div class="persona-quote mt-5">
+          <p class="text-dark/85 italic leading-relaxed">
+            "Earlier, we relied only on lab reports and lacked clarity in purchasing, but now we
+            understand diamonds deeply and confidently procure the right quality at the right price."
+          </p>
+          <div class="font-ui text-xs uppercase tracking-widest text-brand mt-3">— Chinmay Tater · Chirag Gakharu · Rishi Tater · Swarnamala Group</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 6 — PROGRAM DESIGNED BY ============== -->
+<section id="mentor" class="bg-surface text-cream relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid-dark opacity-40 pointer-events-none"></div>
+  <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full" style="background:radial-gradient(circle, rgba(41,181,155,0.18), transparent 70%)"></div>
+
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+      <div class="lg:col-span-5 reveal">
+        <div class="relative inline-block">
+          <div class="aspect-[4/5] w-full max-w-md rounded-3xl overflow-hidden stripes-dark border border-white/10 grid place-items-center">
+            <div class="text-center px-6">
+              <div class="font-ui text-[10px] tracking-[0.25em] uppercase text-accent/80">Photo Placeholder</div>
+              <div class="font-display text-3xl text-cream/40 mt-2">Naman Ajmera</div>
+              <div class="font-ui text-xs text-cream/40 mt-2">Replace with mentor portrait</div>
+            </div>
+          </div>
+          <div class="ring-stamp">
+            <span class="text-[11px] tracking-widest font-ui">G&amp;J<br><span class="text-2xl">EXPERT</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 reveal">
+        <span class="pill bg-white/10 text-cream border border-white/10">
+          <i data-lucide="award" class="w-3 h-3 text-accent"></i>
+          Program Designed By
+        </span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+          Naman Ajmera
+        </h2>
+        <div class="font-ui text-sm md:text-base uppercase tracking-[0.18em] text-accent mt-3">
+          Chartered Accountant · Startup Mentor · G&amp;J Industry Expert
+        </div>
+
+        <p class="text-lg md:text-xl mt-7 leading-relaxed text-cream/80 max-w-2xl">
+          With <span class="text-cream font-semibold">13+ years of experience</span>, Naman has mentored
+          <span class="text-cream font-semibold">2,000+ JK alumni</span> and guided
+          <span class="text-cream font-semibold">100+ startups</span> in the Gems &amp; Jewelry industry,
+          helping them build strong financial foundations and scale with confidence.
+        </p>
+
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href="#hero-form" class="btn btn-primary" style="background:#29B59B;color:#0A2024">
+            Work with Naman
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#stories" class="btn btn-outline-light">See alumni results</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 7 — SUCCESS STORIES ============== -->
+<section id="stories" class="bg-cream relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="flex flex-wrap items-end justify-between gap-6 reveal">
+      <div class="max-w-2xl">
+        <span class="pill bg-brand/10 text-brand"><i data-lucide="trophy" class="w-3 h-3"></i>Success Story</span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+          From freshers to founders — and from traditional shops to scaled brands.
+        </h2>
+      </div>
+      <p class="text-mid text-base max-w-sm">
+        A snapshot of jewelry entrepreneurs who walked through DBM and built businesses that now stand on their own.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → Founder</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Saloni Nahar</h3>
+        <p class="text-mid text-sm mt-1">Founder · Adorne Exquisite Jewels</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → Founder</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Vandana Jain</h3>
+        <p class="text-mid text-sm mt-1">Founder · Orion Diamonds</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Traditional → ₹800 Cr Brand</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Asish Jain</h3>
+        <p class="text-mid text-sm mt-1">Sumangali Jewellers</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → Founder</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Satwik Bansal</h3>
+        <p class="text-mid text-sm mt-1">Founder · Kiyanaa Jewels</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">B2C + Export</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Prajwal Agrawal</h3>
+        <p class="text-mid text-sm mt-1">Founder · Artesa &amp; Co</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Freshers → Partners</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Akshay Kumar &amp; Koushik Medum</h3>
+        <p class="text-mid text-sm mt-1">Aalaap Jewellers</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Traditional → Ecommerce</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Priya Prabhat</h3>
+        <p class="text-mid text-sm mt-1">CEO · Jewels Box</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → Export Factory</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Shubham Lohade</h3>
+        <p class="text-mid text-sm mt-1">Arriva Jewellery · 100–150 member factory, SEEPZ Mumbai</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → 5 Stores</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Prapanjj Kota</h3>
+        <p class="text-mid text-sm mt-1">Founder · Reia Diamonds</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Fresher → D2C</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Nikita Jain</h3>
+        <p class="text-mid text-sm mt-1">Founder · Jewel Saga</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">Gold → Diamond Factory</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Darshit Jain</h3>
+        <p class="text-mid text-sm mt-1">Chintamani Gold · Hyderabad</p>
+      </article>
+      <article class="card !p-6 reveal">
+        <div class="aspect-[4/3] stripes rounded-xl mb-5 grid place-items-center">
+          <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder photo</span>
+        </div>
+        <span class="font-ui text-[10px] uppercase tracking-[0.2em] text-brand">DBM Alumni</span>
+        <h3 class="font-display font-semibold text-xl mt-2">Heerakriti</h3>
+        <p class="text-mid text-sm mt-1">Shreyans Daga &amp; team</p>
+      </article>
+    </div>
+
+    <!-- Begin your success story today CTA strip (from PDF) -->
+    <div class="mt-16 reveal flex flex-wrap items-center justify-between gap-6 p-7 md:p-9 rounded-3xl border border-brand/15 bg-white">
+      <h3 class="font-display font-semibold text-2xl md:text-3xl leading-tight max-w-xl">
+        Begin Your Success Story Today.
+      </h3>
+      <a href="#hero-form" class="btn btn-primary">
+        Join the Waitlist
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 8 — VIDEO TESTIMONIALS ============== -->
+<section class="bg-white">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="text-center max-w-3xl mx-auto reveal">
+      <span class="pill bg-brand/10 text-brand"><i data-lucide="play-circle" class="w-3 h-3"></i>Video Testimonial</span>
+      <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+        Real results from real jewelry business owners.
+      </h2>
+      <p class="text-mid mt-4 text-lg">
+        Listen to alumni describe — in their own words — how DBM changed the trajectory of their business.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+      <article class="reveal group">
+        <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border border-black/10 stripes grid place-items-center">
+          <button class="w-16 h-16 rounded-full bg-brand text-white grid place-items-center shadow-lift group-hover:bg-accent transition" aria-label="Play video">
+            <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+          </button>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="font-ui text-[10px] uppercase tracking-widest text-brand/70 bg-cream/80 px-2 py-1 rounded">Video Placeholder</span>
+          </div>
+        </div>
+        <h3 class="font-display font-semibold text-xl mt-4">Vandana Jain</h3>
+        <p class="text-mid text-sm">Orion Diamonds</p>
+      </article>
+
+      <article class="reveal group">
+        <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border border-black/10 stripes grid place-items-center">
+          <button class="w-16 h-16 rounded-full bg-brand text-white grid place-items-center shadow-lift group-hover:bg-accent transition" aria-label="Play video">
+            <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+          </button>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="font-ui text-[10px] uppercase tracking-widest text-brand/70 bg-cream/80 px-2 py-1 rounded">Video Placeholder</span>
+          </div>
+        </div>
+        <h3 class="font-display font-semibold text-xl mt-4">Prapanjj Kota</h3>
+        <p class="text-mid text-sm">Reia Diamonds</p>
+      </article>
+
+      <article class="reveal group">
+        <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border border-black/10 stripes grid place-items-center">
+          <button class="w-16 h-16 rounded-full bg-brand text-white grid place-items-center shadow-lift group-hover:bg-accent transition" aria-label="Play video">
+            <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+          </button>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="font-ui text-[10px] uppercase tracking-widest text-brand/70 bg-cream/80 px-2 py-1 rounded">Video Placeholder</span>
+          </div>
+        </div>
+        <h3 class="font-display font-semibold text-xl mt-4">Priya Prabhat</h3>
+        <p class="text-mid text-sm">Jewels Box</p>
+      </article>
+
+      <article class="reveal group">
+        <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border border-black/10 stripes grid place-items-center">
+          <button class="w-16 h-16 rounded-full bg-brand text-white grid place-items-center shadow-lift group-hover:bg-accent transition" aria-label="Play video">
+            <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+          </button>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="font-ui text-[10px] uppercase tracking-widest text-brand/70 bg-cream/80 px-2 py-1 rounded">Video Placeholder</span>
+          </div>
+        </div>
+        <h3 class="font-display font-semibold text-xl mt-4">Asish Jain</h3>
+        <p class="text-mid text-sm">Sumangali Jewellers</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 9 — 3 PILLARS ============== -->
+<section id="curriculum" class="bg-cream relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="grid lg:grid-cols-12 gap-10 items-end reveal">
+      <div class="lg:col-span-7">
+        <span class="pill bg-brand/10 text-brand"><i data-lucide="layers-3" class="w-3 h-3"></i>How DBM Will Help You</span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+          You will learn the most important pillars of your business.
+        </h2>
+      </div>
+      <p class="lg:col-span-5 text-mid text-lg">
+        From the diamond itself, to the market it sells in, to the systems that run the company without you.
+      </p>
+    </div>
+
+    <div class="mt-14 reveal">
+      <div class="border-b border-black/10 overflow-x-auto">
+        <div class="flex gap-8 md:gap-12 min-w-max md:min-w-0">
+          <button class="tab-btn active" data-tab="p1">
+            <span class="text-brand mr-2">01</span> Product Knowledge
+          </button>
+          <button class="tab-btn" data-tab="p2">
+            <span class="mr-2">02</span> Business &amp; Market
+          </button>
+          <button class="tab-btn" data-tab="p3">
+            <span class="mr-2">03</span> Management &amp; Scale
+          </button>
+        </div>
+      </div>
+
+      <div class="tab-panel mt-12 grid lg:grid-cols-12 gap-10" data-panel="p1">
+        <div class="lg:col-span-5">
+          <div class="pillar-num">01</div>
+          <h3 class="font-display font-semibold text-3xl md:text-4xl mt-3 leading-tight">
+            Product Knowledge
+          </h3>
+          <p class="font-ui text-sm uppercase tracking-[0.18em] text-brand mt-3">Diamonds &amp; Jewelry — Improve Margins &amp; Reduce Costs</p>
+          <p class="text-mid mt-5 leading-relaxed">
+            To optimise your purchasing and improve margins and costs.
+          </p>
+        </div>
+        <ul class="lg:col-span-7 grid sm:grid-cols-2 gap-3">
+          <li class="card !p-5 flex gap-3"><i data-lucide="diamond" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Diamond technicals</b><span class="text-mid text-sm">Identification, essentials, properties</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="hexagon" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">7Cs &amp; 7S of diamonds</b><span class="text-mid text-sm">A unique technique taught only at JK</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Assortment &amp; grading</b><span class="text-mid text-sm">International &amp; Indian systems</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="handshake" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Trading &amp; purchasing</b><span class="text-mid text-sm">Negotiation &amp; sourcing playbooks</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="calculator" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Diamond valuations</b><span class="text-mid text-sm">Pricing methodology end-to-end</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="ruler" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Estimations &amp; budgeting</b><span class="text-mid text-sm">Jewelry costing &amp; margin control</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="badge-check" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Mounted jewelry QC</b><span class="text-mid text-sm">Quality checks &amp; defect prevention</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="workflow" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Workflow optimisation</b><span class="text-mid text-sm">Better time and quality output</span></span></li>
+        </ul>
+      </div>
+
+      <div class="tab-panel mt-12 hidden grid lg:grid-cols-12 gap-10" data-panel="p2">
+        <div class="lg:col-span-5">
+          <div class="pillar-num">02</div>
+          <h3 class="font-display font-semibold text-3xl md:text-4xl mt-3 leading-tight">
+            Business &amp; Market Knowledge
+          </h3>
+          <p class="font-ui text-sm uppercase tracking-[0.18em] text-brand mt-3">Build a Scalable Jewelry Business Model</p>
+        </div>
+        <ul class="lg:col-span-7 grid sm:grid-cols-2 gap-3">
+          <li class="card !p-5 flex gap-3"><i data-lucide="globe" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Global markets</b><span class="text-mid text-sm">Diamond &amp; jewelry markets worldwide</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="ship" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Export deep-dive</b><span class="text-mid text-sm">Research, execution &amp; compliance</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="layout-template" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Business model canvas</b><span class="text-mid text-sm">B2B, B2C &amp; D2C frameworks</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="rocket" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Launching a jewelry startup</b><span class="text-mid text-sm">From concept to first customers</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="megaphone" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Marketing a jewelry business</b><span class="text-mid text-sm">B2B and B2C, channel by channel</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="map" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Marketing blueprint</b><span class="text-mid text-sm">For execution and growth</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="book-open" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Real case studies</b><span class="text-mid text-sm">Of successfully implemented models</span></span></li>
+        </ul>
+      </div>
+
+      <div class="tab-panel mt-12 hidden grid lg:grid-cols-12 gap-10" data-panel="p3">
+        <div class="lg:col-span-5">
+          <div class="pillar-num">03</div>
+          <h3 class="font-display font-semibold text-3xl md:text-4xl mt-3 leading-tight">
+            Management Setup to Scale
+          </h3>
+          <p class="font-ui text-sm uppercase tracking-[0.18em] text-brand mt-3">Systemise &amp; Automate Your Business</p>
+        </div>
+        <ul class="lg:col-span-7 grid sm:grid-cols-2 gap-3">
+          <li class="card !p-5 flex gap-3"><i data-lucide="search" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Identifying gaps</b><span class="text-mid text-sm">In a jewelry business</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="settings-2" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Key business functions</b><span class="text-mid text-sm">Understand each clearly</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="zap" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Business automation</b><span class="text-mid text-sm">Build a business that runs without you</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="users" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Roles &amp; hurdles</b><span class="text-mid text-sm">Management roles &amp; removing hurdles</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="files" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Cheatsheets &amp; templates</b><span class="text-mid text-sm">Plug-and-play resources</span></span></li>
+          <li class="card !p-5 flex gap-3"><i data-lucide="building-2" class="w-5 h-5 text-brand shrink-0 mt-1"></i><span><b class="font-display font-semibold block">Department models</b><span class="text-mid text-sm">Reference structures for scaling</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 10 — STRONG CTA STRIP ============== -->
+<section class="bg-surface text-cream relative overflow-hidden" id="brochure">
+  <div class="absolute inset-0 bg-grid-dark opacity-40 pointer-events-none"></div>
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-28">
+    <div class="grid lg:grid-cols-12 gap-10 items-center reveal">
+      <div class="lg:col-span-8">
+        <span class="pill bg-white/10 text-cream border border-white/10"><i data-lucide="package" class="w-3 h-3 text-accent"></i>One Packaged Program</span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.6vw,3.8rem)] leading-[1.05] mt-5">
+          One packaged program to solve <span class="italic text-accent">multiple business problems.</span>
+        </h2>
+        <p class="text-cream/70 text-lg mt-5 max-w-2xl">
+          Sourcing, pricing, marketing, exporting, automation — bundled into a single 8–10 week
+          journey, with hybrid delivery and personalised consulting.
+        </p>
+      </div>
+      <div class="lg:col-span-4 flex flex-col gap-3">
+        <a href="#brochure" class="btn btn-primary justify-center" style="background:#29B59B;color:#0A2024">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          Download Brochure
+        </a>
+        <a href="#hero-form" class="btn btn-outline-light justify-center">Apply for the Cohort</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 11 — BOTTLENECK + ESTEEMED ALUMNI ============== -->
+<section class="bg-cream">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="grid lg:grid-cols-12 gap-12 items-center reveal">
+      <div class="lg:col-span-5">
+        <div class="relative">
+          <div class="quote-mark absolute -top-8 -left-3 select-none">"</div>
+          <div class="aspect-square rounded-3xl overflow-hidden stripes border border-black/10 grid place-items-center">
+            <span class="font-ui text-[10px] uppercase tracking-widest text-brand/60">Founder portrait</span>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-7">
+        <span class="pill bg-brand/10 text-brand"><i data-lucide="alert-circle" class="w-3 h-3"></i>The Real Problem</span>
+        <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+          Don't let yourself become the <span class="italic text-brand">bottleneck</span> of growth.
+        </h2>
+        <p class="text-mid text-lg mt-5 leading-relaxed">
+          Let our management expertise help you clear the mess and set you up for scale.
+        </p>
+        <div class="grid sm:grid-cols-3 gap-3 mt-8">
+          <div class="card !p-5 text-center">
+            <div class="font-display text-3xl text-brand">13+</div>
+            <div class="font-ui text-[11px] uppercase tracking-widest text-mid mt-1">Years Experience</div>
+          </div>
+          <div class="card !p-5 text-center">
+            <div class="font-display text-3xl text-brand">2,000+</div>
+            <div class="font-ui text-[11px] uppercase tracking-widest text-mid mt-1">JK Alumni</div>
+          </div>
+          <div class="card !p-5 text-center">
+            <div class="font-display text-3xl text-brand">100+</div>
+            <div class="font-ui text-[11px] uppercase tracking-widest text-mid mt-1">Startups Guided</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Esteemed Alumni marquee -->
+    <div class="mt-20 reveal">
+      <div class="text-center">
+        <span class="font-ui text-[11px] uppercase tracking-[0.25em] text-mid">Esteemed Alumni &amp; Brands</span>
+      </div>
+      <div class="overflow-hidden mt-6">
+        <div class="flex gap-3 marquee-track w-max">
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Chintamani Gold</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Reia Diamonds</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Sumangali Jewellers</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Arriva Jewellery</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Adorne Exquisite</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Orion Diamonds</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Kiyanaa Jewels</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Artesa &amp; Co</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Aalaap Jewellers</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Jewels Box</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Jewel Saga</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Heerakriti</span>
+          <!-- duplicate -->
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Chintamani Gold</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Reia Diamonds</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Sumangali Jewellers</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Arriva Jewellery</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Adorne Exquisite</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Orion Diamonds</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Kiyanaa Jewels</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Artesa &amp; Co</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Aalaap Jewellers</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Jewels Box</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Jewel Saga</span>
+          <span class="pill border border-brand text-brand bg-cream whitespace-nowrap">Heerakriti</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PART 12 — FAQ ============== -->
+<section id="faq" class="bg-white">
+  <div class="max-w-5xl mx-auto px-5 md:px-8 py-24 md:py-32">
+    <div class="text-center max-w-3xl mx-auto reveal">
+      <span class="pill bg-brand/10 text-brand"><i data-lucide="message-circle-question" class="w-3 h-3"></i>FAQ</span>
+      <h2 class="font-display font-semibold text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.05] mt-5">
+        Frequently asked questions
+      </h2>
+      <p class="text-mid mt-4 text-lg">Everything you need before applying.</p>
+    </div>
+
+    <div class="mt-14 reveal divide-y divide-black/10 border-y border-black/10">
+      <details class="faq-item group">
+        <summary class="flex items-center justify-between gap-4 py-6 cursor-pointer list-none">
+          <span class="font-display font-semibold text-lg md:text-xl pr-6">What is the cost of the Diamond Business Mastermind Program?</span>
+          <span class="faq-icon w-9 h-9 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </summary>
+        <div class="faq-body text-mid leading-relaxed">
+          The cost is upwards of INR 1 Lakh depending on your need and structure of the DBM customised program.
+          All other details are mentioned in the DBM E-Catalogue / Brochure.
+        </div>
+      </details>
+
+      <details class="faq-item group">
+        <summary class="flex items-center justify-between gap-4 py-6 cursor-pointer list-none">
+          <span class="font-display font-semibold text-lg md:text-xl pr-6">Can beginners start a jewelry or diamond business?</span>
+          <span class="faq-icon w-9 h-9 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </summary>
+        <div class="faq-body text-mid leading-relaxed">
+          Yes, the program is designed for beginners, startups, and existing business owners.
+        </div>
+      </details>
+
+      <details class="faq-item group">
+        <summary class="flex items-center justify-between gap-4 py-6 cursor-pointer list-none">
+          <span class="font-display font-semibold text-lg md:text-xl pr-6">Is this program suitable for gold jewellers?</span>
+          <span class="faq-icon w-9 h-9 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </summary>
+        <div class="faq-body text-mid leading-relaxed">
+          Yes, especially for those looking to shift to higher-margin diamond jewelry.
+        </div>
+      </details>
+
+      <details class="faq-item group">
+        <summary class="flex items-center justify-between gap-4 py-6 cursor-pointer list-none">
+          <span class="font-display font-semibold text-lg md:text-xl pr-6">Do I need prior experience in diamonds?</span>
+          <span class="faq-icon w-9 h-9 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </summary>
+        <div class="faq-body text-mid leading-relaxed">
+          No prior experience is required.
+        </div>
+      </details>
+
+      <details class="faq-item group">
+        <summary class="flex items-center justify-between gap-4 py-6 cursor-pointer list-none">
+          <span class="font-display font-semibold text-lg md:text-xl pr-6">Is this available online or offline?</span>
+          <span class="faq-icon w-9 h-9 rounded-full bg-brand/10 text-brand grid place-items-center shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </span>
+        </summary>
+        <div class="faq-body text-mid leading-relaxed">
+          The program is delivered in a hybrid format (Online and on campus) with personalised consulting.
+        </div>
+      </details>
+    </div>
+
+    <div class="mt-14 text-center reveal">
+      <a href="#hero-form" class="btn btn-primary">
+        Apply Now
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="bg-dark text-cream/70">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-14 grid md:grid-cols-3 gap-8 items-start">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="diamond-shape" style="background:#29B59B"></span>
+        <span class="font-display font-semibold text-lg text-cream">Diamond Business Mastermind</span>
+      </div>
+      <p class="text-sm mt-4 max-w-xs">
+        A structured, step-by-step program to launch, grow, and scale your jewelry business —
+        without confusion or guesswork.
+      </p>
+    </div>
+    <div>
+      <div class="font-ui text-[11px] uppercase tracking-widest text-cream mb-4">Program</div>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#about" class="hover:text-accent">About DBM</a></li>
+        <li><a href="#personas" class="hover:text-accent">Who It's For</a></li>
+        <li><a href="#curriculum" class="hover:text-accent">Curriculum</a></li>
+        <li><a href="#stories" class="hover:text-accent">Success Stories</a></li>
+        <li><a href="#faq" class="hover:text-accent">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-ui text-[11px] uppercase tracking-widest text-cream mb-4">Get Started</div>
+      <div class="flex flex-col gap-3 max-w-xs">
+        <a href="#hero-form" class="btn btn-primary justify-center" style="background:#29B59B;color:#0A2024">Apply Now</a>
+        <a href="#brochure" class="btn btn-outline-light justify-center">Download Brochure</a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-5 text-xs flex flex-wrap justify-between gap-3">
+      <span>© 2026 JK · Diamond Business Mastermind. All rights reserved.</span>
+      <span>Designed for jewelry entrepreneurs who are ready to scale.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  if (window.lucide) lucide.createIcons();
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const id = btn.dataset.tab;
+      panels.forEach(p => {
+        if (p.dataset.panel === id) p.classList.remove('hidden');
+        else p.classList.add('hidden');
+      });
+      if (window.lucide) lucide.createIcons();
+    });
+  });
+
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('toggle', () => {
+      if (item.open) item.classList.add('open');
+      else item.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>

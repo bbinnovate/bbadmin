@@ -36,7 +36,7 @@ const Users = () => {
   
   const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(true);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  // const dropdownRef = useRef<HTMLDivElement | null>(null);
 
 
   // 🔥 dropdown open state
@@ -63,12 +63,12 @@ const Users = () => {
 
 
 // ClickOutside
-  useEffect(() => {
+useEffect(() => {
   const handleClickOutside = (e: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(e.target as Node)
-    ) {
+    const target = e.target as HTMLElement;
+
+    // If click is NOT inside any permission dropdown container
+    if (!target.closest(".permission-dropdown")) {
       setOpenPermissionUser(null);
     }
   };
@@ -170,8 +170,10 @@ const Users = () => {
                   </td>
 
                   {/* ✅ PERMISSIONS DROPDOWN */}
-                  <td className="px-3 py-2  relative">
-                    <div ref={dropdownRef} className="">
+                 <td className="px-3 py-2 relative permission-dropdown">
+                    <div 
+                    // ref={dropdownRef} 
+                    className="">
                     {user.role === "admin" && (
                       <div className="space-y-2">
 
@@ -201,7 +203,7 @@ const Users = () => {
                         </button>
 
                         {openPermissionUser === user.id && (
-                          <div className="absolute z-99 overflow-visible mt-1 w-full  bg-white border rounded-md shadow-lg p-3 space-y-2">
+                          <div className="absolute z-50 overflow-visible mt-1 w-full  bg-white border rounded-md shadow-lg p-3 space-y-2">
                             {ALL_PERMISSIONS.map((p) => {
                               const selected = normalizePermissions(user.permissions).includes(p.key);
                               return (

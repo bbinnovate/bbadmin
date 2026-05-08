@@ -167,56 +167,138 @@ const capitalizeWords = (value?: string) =>
     : "";
 
   // CSV Export (same logic as career)
-  const handleExportCSV = () => {
-    const { startDate, endDate } = exportRange[0];
-    if (!startDate || !endDate) return;
+const handleExportCSV = () => {
+  let dataToExport = [...filteredApps];
 
-    const start = new Date(startDate);
+  if (!dataToExport.length) {
+    alert("No records found for current filters");
+    return;
+  }
+
+  // -----------------------------
+  // 1️⃣ Apply Export Popup Date (if selected)
+  // -----------------------------
+  const exportStart = exportRange[0]?.startDate;
+  const exportEnd = exportRange[0]?.endDate;
+
+  let usedExportDate = false;
+
+  if (
+    exportStart instanceof Date &&
+    exportEnd instanceof Date &&
+    !isNaN(exportStart.getTime()) &&
+    !isNaN(exportEnd.getTime())
+  ) {
+    const start = new Date(exportStart);
     start.setHours(0, 0, 0, 0);
 
-    const end = new Date(endDate);
+    const end = new Date(exportEnd);
     end.setHours(23, 59, 59, 999);
 
-    const filtered = applications.filter((a) => {
-      if (!a.createdAt) return false;
+    const filteredByExportDate = dataToExport.filter((a) => {
+      if (!a.createdAt?.seconds) return false;
       const d = new Date(a.createdAt.seconds * 1000);
       return d >= start && d <= end;
     });
 
-    if (!filtered.length) {
-      alert("No records found for selected date range");
-      return;
+    if (filteredByExportDate.length) {
+      dataToExport = filteredByExportDate;
+      usedExportDate = true;
     }
+  }
 
-    const csv =
-      "Company Name,Brand Name,Contact Person,Email,Phone,Services,Industry,GSTIN,Address,Website,Date\n" +
-      filtered
-        .map((a) =>
-         [
-  capitalizeWords(a.companyName),
-  capitalizeWords(a.brandName || "-"),
-  capitalizeWords(a.contactPerson?.replace(/\n/g, " ")),
-  a.email,
-  a.phone,
-  capitalizeWords(a.services?.join(", ")),
-  capitalizeWords(a.industry || "-"),
-  capitalizeWords(a.gstin || "-"),
-  capitalizeWords(a.address || "-"),
-  capitalizeWords(a.website || "-"),
-  new Date(a.createdAt!.seconds * 1000).toLocaleDateString("en-GB"),
-]
+  // -----------------------------
+  // 2️⃣ Build CSV
+  // -----------------------------
+  const csv =
+    "Company Name,Brand Name,Contact Person,Email,Phone,Services,Industry,GSTIN,Address,Website,Date\n" +
+    dataToExport
+      .map((a) =>
+        [
+          capitalizeWords(a.companyName),
+          capitalizeWords(a.brandName || "-"),
+          capitalizeWords(a.contactPerson?.replace(/\n/g, " ")),
+          a.email,
+          a.phone,
+          capitalizeWords(a.services?.join(", ") || ""),
+          capitalizeWords(a.industry || "-"),
+          capitalizeWords(a.gstin || "-"),
+          capitalizeWords(a.address || "-"),
+          capitalizeWords(a.website || "-"),
+          a.createdAt
+            ? new Date(a.createdAt.seconds * 1000).toLocaleDateString("en-GB")
+            : "",
+        ]
+          .map((v) => `"${v}"`)
+          .join(",")
+      )
+      .join("\n");
 
-            .map((v) => `"${v}"`)
-            .join(",")
-        )
-        .join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-   link.download = `Client Applications ${formatDDMMYYYY(start)} to ${formatDDMMYYYY(end)}.csv`;
-    link.click();
+  // -----------------------------
+  // 3️⃣ Professional Filename Logic
+  // -----------------------------
+  const parts: string[] = ["Client Applications"];
+
+  if (selectedService.trim()) {
+    parts.push(capitalizeWords(selectedService));
+  }
+
+  if (searchTerm.trim()) {
+    parts.push(`Search-${searchTerm.trim().replace(/\s+/g, "_")}`);
+  }
+
+  const getMinMaxDates = (apps: ClientApp[]) => {
+    const dates = apps
+      .filter((a) => a.createdAt?.seconds)
+      .map((a) => a.createdAt!.seconds * 1000);
+
+    if (!dates.length) return null;
+
+    const min = new Date(Math.min(...dates));
+    const max = new Date(Math.max(...dates));
+
+    return {
+      minLabel: formatDDMMYYYY(min),
+      maxLabel: formatDDMMYYYY(max),
+    };
   };
+
+  // Date priority:
+  // 1. Export popup date
+  // 2. Filter date
+  // 3. Visible data range
+
+  if (usedExportDate && exportStart && exportEnd) {
+    parts.push(
+      `${formatDDMMYYYY(exportStart)} to ${formatDDMMYYYY(exportEnd)}`
+    );
+  } else if (
+    dateRange[0]?.startDate &&
+    dateRange[0]?.endDate
+  ) {
+    parts.push(
+      `${formatDDMMYYYY(dateRange[0].startDate)} to ${formatDDMMYYYY(
+        dateRange[0].endDate
+      )}`
+    );
+  } else {
+    const range = getMinMaxDates(dataToExport);
+    if (range) {
+      parts.push(`${range.minLabel} to ${range.maxLabel}`);
+    }
+  }
+
+  const fileName = `${parts.join(" - ")}.csv`;
+
+  link.download = fileName;
+  link.click();
+
+  setShowExportRange(false);
+};
 
   return (
     <div className="relative">
@@ -354,7 +436,7 @@ const capitalizeWords = (value?: string) =>
                 <td className="p-3">
                   {a.website ? (
                     <a
-                      href={a.website}
+                      href={a.website.startsWith("http") ? a.website : `https://${a.website}`}
                       target="_blank"
                       className="text-blue-600 hover:underline"
                     >

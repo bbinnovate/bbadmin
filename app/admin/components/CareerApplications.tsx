@@ -56,14 +56,13 @@ const [dateRange, setDateRange] = useState<DateRangeState[]>([
   { startDate: undefined, endDate: undefined, key: "selection" },
 ]);
 
- const today = new Date();
-    const [exportRange, setExportRange] = useState([
-    {
-      startDate: today,
-      endDate: today,
-      key: "export",
-    },
-  ]);
+const [exportRange, setExportRange] = useState([
+  {
+    startDate: undefined,
+    endDate: undefined,
+    key: "export",
+  },
+]);
 
   const [showExportRange, setShowExportRange] = useState(false);
   const [viewApp, setViewApp] = useState<CareerApp | null>(null); // 🔹 for View popup
@@ -91,7 +90,7 @@ const [dateRange, setDateRange] = useState<DateRangeState[]>([
         const snapshot = await getDocs(q);
         const apps: CareerApp[] = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          ...doc.data(), 
         })) as CareerApp[];
         setApplications(apps);
         setFilteredApps(apps);
@@ -170,31 +169,84 @@ const formatDateFromDateObj = (date: Date) => {
 
   // 🔹 Export CSV by inline date range
 const handleExportCSV = () => {
-  const { startDate, endDate } = exportRange[0];
+  let dataToExport = [...applications];
 
-  if (!startDate || !endDate) {
-    alert("Please select a date range to export CSV.");
+  // -----------------------------
+  // 1️⃣ Apply Search Filter
+  // -----------------------------
+  if (searchTerm.trim() !== "") {
+    const lower = searchTerm.toLowerCase();
+    dataToExport = dataToExport.filter(
+      (app) =>
+        app.name.toLowerCase().includes(lower) ||
+        app.jobTitle.toLowerCase().includes(lower) ||
+        app.phone.includes(searchTerm) ||
+        app.availability.toLowerCase().includes(lower)
+    );
+  }
+
+  // -----------------------------
+  // 2️⃣ Apply Job Filter
+  // -----------------------------
+  if (selectedJob !== "") {
+    dataToExport = dataToExport.filter(
+      (app) => app.jobTitle === selectedJob
+    );
+  }
+
+  // -----------------------------
+  // 3️⃣ Apply Inline Date Filter
+  // -----------------------------
+  const { startDate, endDate } = dateRange[0] || {};
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    dataToExport = dataToExport.filter((app) => {
+      if (!app.createdAt?.seconds) return false;
+      const appDate = new Date(app.createdAt.seconds * 1000);
+      return appDate >= start && appDate <= end;
+    });
+  }
+
+  // -----------------------------
+  // 4️⃣ Apply Export Popup Date
+  // -----------------------------
+
+
+  
+const exportStart = exportRange[0]?.startDate;
+const exportEnd = exportRange[0]?.endDate;
+
+if (exportStart && exportEnd) {
+    const start = new Date(exportStart);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(exportEnd);
+    end.setHours(23, 59, 59, 999);
+
+    dataToExport = dataToExport.filter((app) => {
+      if (!app.createdAt?.seconds) return false;
+      const appDate = new Date(app.createdAt.seconds * 1000);
+      return appDate >= start && appDate <= end;
+    });
+  }
+
+  // -----------------------------
+  // 5️⃣ Safety Check
+  // -----------------------------
+  if (!dataToExport.length) {
+    alert("No applications found for selected filters.");
     return;
   }
 
-  // ✅ FIX: normalize day boundaries
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(endDate);
-  end.setHours(23, 59, 59, 999);
-
-  const filtered = applications.filter((app) => {
-    if (!app.createdAt) return false;
-    const appDate = new Date(app.createdAt.seconds * 1000);
-    return appDate >= start && appDate <= end;
-  });
-
-  if (filtered.length === 0) {
-    alert("No applications found for the selected date range.");
-    return;
-  }
-
+  // -----------------------------
+  // 6️⃣ Build CSV
+  // -----------------------------
   const csvContent =
     "data:text/csv;charset=utf-8," +
     [
@@ -209,33 +261,82 @@ const handleExportCSV = () => {
         "Message",
         "Date",
       ].join(","),
-      ...filtered.map((app) =>
+
+      ...dataToExport.map((app) =>
         [
-  `"${capitalize(app.name)}"`,
-  `"${(app.email)}"`,
-  `"${app.phone}"`,
-  `"${capitalize(app.jobTitle)}"`,
-  `"${capitalize(app.availability)}"`,
-  `"${app.cvUrl}"`,
-  `"${app.portfolio}"`,
-  `"${capitalize(app.message?.replace(/\n/g, " "))}"`,
-  `"${formatDateDDMMYYYY(app.createdAt!.seconds)}"`
-].join(",")
+          `"${capitalize(app.name)}"`,
+          `"${app.email}"`,
+          `"${app.phone}"`,
+          `"${capitalize(app.jobTitle)}"`,
+          `"${capitalize(app.availability)}"`,
+          `"${app.cvUrl || ""}"`,
+          `"${app.portfolio || ""}"`,
+          `"${capitalize(app.message?.replace(/\n/g, " ") || "")}"`,
+          `"${
+            app.createdAt
+              ? formatDateDDMMYYYY(app.createdAt.seconds)
+              : ""
+          }"`,
+        ].join(",")
       ),
     ].join("\n");
 
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
- // ✅ FIXED filename date format
-  link.setAttribute(
-    "download",
-    `Career Applications ${formatDateFromDateObj(start)} to ${formatDateFromDateObj(end)}.csv`
+    // -------- Filename Logic ----------
+  const parts: string[] = ["Career Applications"];
+
+
+
+  // Inline filter date (table filter)
+const inlineStart = dateRange[0]?.startDate;
+const inlineEnd = dateRange[0]?.endDate;
+
+if (inlineStart && inlineEnd) {
+  parts.push(
+    `${formatDateFromDateObj(inlineStart)} to ${formatDateFromDateObj(inlineEnd)}`
   );
+}
+
+// Export popup date
+const exportStartName = exportRange[0]?.startDate;
+const exportEndName = exportRange[0]?.endDate;
+
+if (exportStartName && exportEndName) {
+  parts.push(
+    `${formatDateFromDateObj(exportStartName)} to ${formatDateFromDateObj(exportEndName)}`
+  );
+} 
+
+  if (selectedJob) {
+    parts.push(capitalize(selectedJob));
+  }
+
+  if (searchTerm.trim()) {
+    parts.push(`Search-${searchTerm.trim().replace(/\s+/g, "_")}`);
+  }
+
+  // const { startDate, endDate } = dateRange[0];
+  if (startDate && endDate) {
+    parts.push(
+      `${formatDateFromDateObj(startDate)} to ${formatDateFromDateObj(
+        endDate
+      )}`
+    );
+  }
+
+  const fileName = parts.join(" - ") + ".csv";
+   link.setAttribute("download", fileName);
+   
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
+
+
+
+
 
 
   return (
@@ -371,8 +472,8 @@ const handleExportCSV = () => {
           if (selection) {
             setExportRange([
               {
-                startDate: selection.startDate ?? today,
-                endDate: selection.endDate ?? selection.startDate ?? today,
+                startDate: selection.startDate ?? undefined,
+                endDate: selection.endDate ?? undefined,
                 key: "export",
               },
             ]);
@@ -490,7 +591,7 @@ const handleExportCSV = () => {
       })()
     : "—"}
                   </td>
-                  <td className="p-3 max-w-[200px] truncate capitalize">{app.message}</td>
+                  <td className="p-3 max-w-[200px] truncate ">{app.message}</td>
                   <td className="p-3">
                     <button
                       onClick={() => setViewApp(app)}
@@ -503,6 +604,7 @@ const handleExportCSV = () => {
               ))}
             </tbody>
           </table>
+          
           {/* Pagination Controls */}
 {totalPages > 1 && (
   <div className="flex justify-center items-center mt-4 gap-2 py-4">
@@ -603,7 +705,7 @@ const handleExportCSV = () => {
                   "—"
                 )}
               </p>
-              <p className="capitalize"><strong>Message:</strong> {viewApp.message || "—"}</p>
+              <p ><strong>Message:</strong> {viewApp.message || "—"}</p>
             </div>
 
             <button

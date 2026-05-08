@@ -59,11 +59,11 @@ const handlePageChange = (page: number) => {
   ]);
 
   // Export CSV popup
-  const today = new Date();
+
   const [showExportRange, setShowExportRange] = useState(false);
-  const [exportRange, setExportRange] = useState<DateRangeState[]>([
-    { startDate: today, endDate: today, key: "export" },
-  ]);
+const [exportRange, setExportRange] = useState<DateRangeState[]>([
+  { startDate: undefined, endDate: undefined, key: "export" },
+]);
 
   // Fetch data
   useEffect(() => {
@@ -160,52 +160,138 @@ const capitalizeWords = (value?: string) =>
     : "";
 
   // CSV Export (same logic as career)
-  const handleExportCSV = () => {
-    const { startDate, endDate } = exportRange[0];
-    if (!startDate || !endDate) return;
+const handleExportCSV = () => {
+  let dataToExport = [...filteredApps];
 
-    const start = new Date(startDate);
+  if (!dataToExport.length) {
+    alert("No records found for current filters");
+    return;
+  }
+
+  // -----------------------------
+  // 1️⃣ Apply Export Popup Date Filter (if properly selected)
+  // -----------------------------
+  const exportStart = exportRange[0]?.startDate;
+  const exportEnd = exportRange[0]?.endDate;
+
+  let hasExportDate = false;
+
+  if (
+    exportStart instanceof Date &&
+    exportEnd instanceof Date &&
+    !isNaN(exportStart.getTime()) &&
+    !isNaN(exportEnd.getTime())
+  ) {
+    hasExportDate = true;
+
+    const start = new Date(exportStart);
     start.setHours(0, 0, 0, 0);
 
-    const end = new Date(endDate);
+    const end = new Date(exportEnd);
     end.setHours(23, 59, 59, 999);
 
-    const filtered = applications.filter((a) => {
-      if (!a.createdAt) return false;
+    const filteredByExportDate = dataToExport.filter((a) => {
+      if (!a.createdAt?.seconds) return false;
       const d = new Date(a.createdAt.seconds * 1000);
       return d >= start && d <= end;
     });
 
-    if (!filtered.length) {
-      alert("No records found for selected date range");
-      return;
+    // Only apply if it actually returns results
+    if (filteredByExportDate.length > 0) {
+      dataToExport = filteredByExportDate;
     }
+    // If zero results, DO NOT block export.
+    // Just export current filteredApps instead.
+  }
 
-    const csv =
-      "Name,Email,Phone,Company,Services,Message,Date\n" +
-      filtered
-        .map((a) =>
-         [
-  capitalizeWords(a.name),
-  a.email,
-  a.phone,
-  capitalizeWords(a.company || "-"),
-  capitalizeWords(a.services?.join(", ")),
-  capitalizeWords(a.message?.replace(/\n/g, " ")),
-  new Date(a.createdAt!.seconds * 1000).toLocaleDateString("en-GB"),
-]
+  // -----------------------------
+  // 2️⃣ Build CSV
+  // -----------------------------
+  const csv =
+    "Name,Email,Phone,Company,Services,Message,Date\n" +
+    dataToExport
+      .map((a) =>
+        [
+          capitalizeWords(a.name),
+          a.email,
+          a.phone,
+          capitalizeWords(a.company || "-"),
+          capitalizeWords(a.services?.join(", ") || ""),
+          capitalizeWords(a.message?.replace(/\n/g, " ") || ""),
+          a.createdAt
+            ? new Date(a.createdAt.seconds * 1000).toLocaleDateString("en-GB")
+            : "",
+        ]
+          .map((v) => `"${v}"`)
+          .join(",")
+      )
+      .join("\n");
 
-            .map((v) => `"${v}"`)
-            .join(",")
-        )
-        .join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-   link.download = `Contact Applications ${formatDDMMYYYY(start)} to ${formatDDMMYYYY(end)}.csv`;
-    link.click();
+  // -----------------------------
+  // 3️⃣ Filename Logic
+  // -----------------------------
+  const parts: string[] = ["Contact Applications"];
+
+  if (selectedService.trim()) {
+    parts.push(capitalizeWords(selectedService));
+  }
+
+  if (searchTerm.trim()) {
+    parts.push(`Search-${searchTerm.trim().replace(/\s+/g, "_")}`);
+  }
+
+  const getMinMaxDates = (apps: ContactApp[]) => {
+    const dates = apps
+      .filter((a) => a.createdAt?.seconds)
+      .map((a) => a.createdAt!.seconds * 1000);
+
+    if (!dates.length) return null;
+
+    const min = new Date(Math.min(...dates));
+    const max = new Date(Math.max(...dates));
+
+    return {
+      minLabel: formatDDMMYYYY(min),
+      maxLabel: formatDDMMYYYY(max),
+    };
   };
+
+// 1️⃣ If export popup date is selected → use that
+if (hasExportDate && exportStart && exportEnd) {
+  parts.push(
+    `${formatDDMMYYYY(exportStart)} to ${formatDDMMYYYY(exportEnd)}`
+  );
+}
+
+// 2️⃣ Else if filter date (top dateRange) is selected → use THAT
+else if (dateRange[0]?.startDate && dateRange[0]?.endDate) {
+  parts.push(
+    `${formatDDMMYYYY(dateRange[0].startDate)} to ${formatDDMMYYYY(
+      dateRange[0].endDate
+    )}`
+  );
+}
+
+// 3️⃣ Else fallback to content range
+else {
+  const range = getMinMaxDates(dataToExport);
+  if (range) {
+    parts.push(`${range.minLabel} to ${range.maxLabel}`);
+  }
+}
+
+  const fileName = `${parts.join(" - ")}.csv`;
+
+  link.download = fileName;
+  link.click();
+};
+
+
+
 
   return (
     <div className="relative">
@@ -355,7 +441,7 @@ const capitalizeWords = (value?: string) =>
                       )
                     : "-"}
                 </td>
-                <td className="p-3 max-w-[220px] truncate capitalize">{a.message}</td>
+                <td className="p-3 max-w-[220px] truncate ">{a.message}</td>
                 <td className="p-3">
                   <button
                     onClick={() => setViewApp(a)}
@@ -441,7 +527,7 @@ const capitalizeWords = (value?: string) =>
 </p>
               <p className="capitalize" ><strong>Company:</strong> {viewApp.company || "-"}</p>
               <p className="capitalize" ><strong>Services:</strong> {viewApp.services.join(", ")}</p>
-              <p className="capitalize" ><strong>Message:</strong> {viewApp.message}</p>
+              <p  ><strong>Message:</strong> {viewApp.message}</p>
               <p>
                 <strong>Date:</strong>{" "}
                 {viewApp.createdAt
