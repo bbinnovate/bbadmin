@@ -197,7 +197,12 @@ useEffect(() => {
 if (selectedCategory) {
   filtered = filtered.filter(
     (career) =>
-      career.category === selectedCategory
+      career.category
+        ?.toLowerCase()
+        .trim() ===
+      selectedCategory
+        .toLowerCase()
+        .trim()
   );
 }
 
@@ -331,6 +336,7 @@ const createSlug = (title: string) => {
        {/* 🧩 Service */}
        {/* 🧩 Category Filter */}
 <div className="relative min-w-[200px]">
+ <div className="relative min-w-[220px]">
   <select
     value={selectedCategory}
     onChange={(e) =>
@@ -344,17 +350,43 @@ const createSlug = (title: string) => {
       capitalize
     "
   >
-    <option value="">All Categories</option>
+<option value="">All Categories</option>
 
-    {allCategories.map((category) => (
-      <option
-        key={category}
-        value={category}
-      >
-        {category}
-      </option>
-    ))}
+<option value="performance">
+  Performance Marketing
+</option>
+
+<option value="social">
+  Social Media
+</option>
+
+<option value="design">
+  Design & Editing
+</option>
+
+<option value="seo">
+  SEO
+</option>
+
+<option value="tech">
+  Tech / Development
+</option>
+
+<option value="others">
+  Others
+</option>
   </select>
+
+  <ChevronDown
+    size={16}
+    className="
+      absolute right-3 top-1/2
+      -translate-y-1/2
+      text-gray-500
+      pointer-events-none
+    "
+  />
+</div>
 
   <ChevronDown
     size={16}
@@ -463,16 +495,64 @@ const createSlug = (title: string) => {
 </button>
 
 </td>
-                 <td className="p-3 capitalize">
-  {career.isImmediate ? (
-    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                 <td className="p-3">
+  <select
+    value={career.isImmediate ? "yes" : "no"}
+    onChange={async (e) => {
+      const value = e.target.value === "yes";
+
+      try {
+        // 🔥 instant UI update
+        setCareers((prev) =>
+          prev.map((item) =>
+            item.id === career.id
+              ? {
+                  ...item,
+                  isImmediate: value,
+                }
+              : item
+          )
+        );
+
+        // ✅ firestore update
+        await updateDoc(
+          doc(db, "careers", career.id),
+          {
+            isImmediate: value,
+          }
+        );
+
+        toast.success(
+          value
+            ? "Set as Immediate"
+            : "Set as Not Immediate"
+        );
+
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          "Failed to update availability"
+        );
+      }
+    }}
+    className={`
+      border rounded-lg px-3 py-2 text-sm
+      focus:outline-none cursor-pointer
+      ${
+        career.isImmediate
+          ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+          : "bg-gray-100 text-gray-700 border-gray-300"
+      }
+    `}
+  >
+    <option value="yes">
       Immediate Joiner
-    </span>
-  ) : (
-    <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full">
+    </option>
+
+    <option value="no">
       Not Immediate
-    </span>
-  )}
+    </option>
+  </select>
 </td>
 
         {/* <td className="p-3 capitalize">{career.title}</td> */}
