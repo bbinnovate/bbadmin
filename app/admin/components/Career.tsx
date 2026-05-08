@@ -534,7 +534,7 @@ const createSlug = (title: string) => {
     </button>
 
    <a
-  href={`https://localhost:3001/join-our-team/${createSlug(career.title)}?id=${career.id}`}
+  href={`https://bombayblokes.com/join-our-team/${createSlug(career.title)}?id=${career.id}`}
       target="_blank"
       rel="noreferrer"
       className="p-2 border rounded-md hover:bg-gray-100 transition"
