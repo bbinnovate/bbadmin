@@ -21,6 +21,7 @@ import {
   ChevronDown,
   FolderPlus,
 } from "lucide-react";
+import Button from "@/app/components/Button";
 
 type CareerCategory = {
   id: string;
@@ -207,21 +208,16 @@ export default function CareerCategories() {
   };
 
   return (
-    <div className="p-6 md:p-8">
+    <div className=" relative">
 
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black">
-          Career Categories
-        </h1>
 
-        <p className="text-gray-500 mt-1">
-          Create, delete and reorder categories
-        </p>
-      </div>
+        <h3 className=" font-semibold mb-5"> Career Categories</h3>
+       
+     
 
       {/* ADD CATEGORY */}
-      <div className="bg-white border rounded-2xl p-5 mb-8">
+      <div className="bg-white border rounded-lg p-5 mb-8">
 
         <div className="flex flex-col md:flex-row gap-3">
 
@@ -234,7 +230,7 @@ export default function CareerCategories() {
             }
             className="
               border
-              rounded-xl
+              rounded-lg
               px-4
               py-3
               w-full
@@ -244,26 +240,12 @@ export default function CareerCategories() {
             "
           />
 
-          <button
-            onClick={handleAddCategory}
-            className="
-              bg-black
-              text-white
-              px-6
-              py-3
-              rounded-xl
-              flex
-              items-center
-              justify-center
-              gap-2
-              hover:opacity-90
-              transition
-            "
-          >
-            <FolderPlus size={18} />
-            Add Category
-          </button>
 
+           <Button
+           onClick={handleAddCategory}
+          text="Add Category"
+          className="text-black font-semibold"
+        />
         </div>
       </div>
 
@@ -275,7 +257,7 @@ export default function CareerCategories() {
             Loading categories...
           </div>
         ) : categories.length === 0 ? (
-          <div className="border rounded-2xl p-10 text-center text-gray-500">
+          <div className="border rounded-lg p-10 text-center text-gray-500">
             No categories found
           </div>
         ) : (
@@ -284,7 +266,7 @@ export default function CareerCategories() {
               key={cat.id}
               className="
                 border
-                rounded-2xl
+                rounded-lg
                 p-5
                 bg-white
                 flex
@@ -297,7 +279,7 @@ export default function CareerCategories() {
               {/* LEFT */}
               <div>
 
-                <h3 className="font-semibold text-lg text-black capitalize">
+                <h3 className="font-semibold text-black capitalize">
                   {cat.name}
                 </h3>
 
@@ -317,7 +299,7 @@ export default function CareerCategories() {
                   className="
                     w-10
                     h-10
-                    rounded-xl
+                    rounded-lg
                     border
                     flex
                     items-center
@@ -336,7 +318,7 @@ export default function CareerCategories() {
                   className="
                     w-10
                     h-10
-                    rounded-xl
+                    rounded-lg
                     border
                     flex
                     items-center
@@ -356,7 +338,7 @@ export default function CareerCategories() {
                   className="
                     w-10
                     h-10
-                    rounded-xl
+                    rounded-lg
                     bg-red-500
                     text-white
                     flex
