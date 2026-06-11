@@ -7,6 +7,7 @@ import { DateRange } from "react-date-range";
 import { ChevronDown } from "lucide-react";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { deleteDoc, doc } from "firebase/firestore";
 
 type ContactApp = {
   id: string;
@@ -30,6 +31,7 @@ export default function ContactApplications() {
   const [applications, setApplications] = useState<ContactApp[]>([]);
   const [filteredApps, setFilteredApps] = useState<ContactApp[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -290,7 +292,47 @@ else {
   link.click();
 };
 
+const toggleSelect = (id: string) => {
+  setSelectedIds((prev) =>
+    prev.includes(id)
+      ? prev.filter((item) => item !== id)
+      : [...prev, id]
+  );
+};
 
+const handleDeleteSelected = async () => {
+  if (!selectedIds.length) {
+    alert("Please select records");
+    return;
+  }
+
+  const confirmDelete = window.confirm(
+    `Delete ${selectedIds.length} selected record(s)?`
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await Promise.all(
+      selectedIds.map((id) =>
+        deleteDoc(doc(db, "contactSubmissions", id))
+      )
+    );
+
+    const updated = applications.filter(
+      (app) => !selectedIds.includes(app.id)
+    );
+
+    setApplications(updated);
+    setFilteredApps(updated);
+    setSelectedIds([]);
+
+    alert("Deleted successfully");
+  } catch (error) {
+    console.error(error);
+    alert("Failed to delete records");
+  }
+};
 
 
   return (
@@ -360,12 +402,21 @@ else {
     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
   </div>
 
-        <button
-          onClick={() => setShowExportRange(true)}
-          className="bg-black text-white px-4 py-2 rounded-lg  cursor-pointer"
-        >
-          Export CSV
-        </button>
+      <div className="flex gap-2">
+  <button
+    onClick={() => setShowExportRange(true)}
+    className="bg-black text-white px-4 py-2 rounded-lg cursor-pointer"
+  >
+    Export CSV
+  </button>
+
+  {/* <button
+    onClick={handleDeleteSelected}
+    className="bg-red-600 text-white px-4 py-2 rounded-lg cursor-pointer"
+  >
+    Delete Selected
+  </button> */}
+</div>
       </div>
 
       {/* Table */}
@@ -384,10 +435,37 @@ else {
         <table className="min-w-[1200px] w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
+              {/* <th className="p-3 text-left">
+  <input
+    type="checkbox"
+    checked={
+      currentApps.length > 0 &&
+      currentApps.every((app) =>
+        selectedIds.includes(app.id)
+      )
+    }
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedIds([
+          ...new Set([
+            ...selectedIds,
+            ...currentApps.map((a) => a.id),
+          ]),
+        ]);
+      } else {
+        setSelectedIds(
+          selectedIds.filter(
+            (id) =>
+              !currentApps.some((a) => a.id === id)
+          )
+        );
+      }
+    }}
+  />
+</th> */}
               <th className="p-3 text-left">SR No.</th>
               <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Phone</th>
+              <th className="p-3 text-left">Contact</th>
               <th className="p-3 text-left">Company</th>
               <th className="p-3 text-left">Services</th>
               <th className="p-3 text-left">Date</th>
@@ -398,27 +476,36 @@ else {
           <tbody>
            {currentApps.map((a,i) => (
               <tr key={a.id} className="border-t">
+                {/* <td className="p-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.includes(a.id)}
+    onChange={() => toggleSelect(a.id)}
+  />
+</td> */}
                  <td className="p-3 capitalize">{indexOfFirst + i + 1}</td>
                 <td className="p-3 capitalize">{a.name}</td>
-                <td className="p-3"> 
-                 <a
+                
+
+<td className="p-3 ">
+  <div className="flex flex-col">
+    <a
       href={`mailto:${a.email}`}
       className=" text-blue-500 hover:underline"
     >
-      {a.email}
+       {a.email}
     </a>
-</td>
 
- <td className="p-3"> 
-                 <a
-        href={`tel:${a.phone}`}
-      className=" text-blue-500 hover:underline"
+    <a
+      href={`tel:${a.phone}`}
+      className=" text-blue-500 hover:underline mt-1"
     >
       {a.phone}
     </a>
+  </div>
 </td>
 
-                
+        
                 <td className="p-3 capitalize">{a.company || "-"}</td>
                <td className="p-3 capitalize">
   <div className="space-y-1">
@@ -441,7 +528,7 @@ else {
                       )
                     : "-"}
                 </td>
-                <td className="p-3 max-w-[220px] truncate ">{a.message}</td>
+                <td className="p-3 max-w-[220px] truncate ">{a.message || "No Message "}</td>
                 <td className="p-3">
                   <button
                     onClick={() => setViewApp(a)}
@@ -527,7 +614,7 @@ else {
 </p>
               <p className="capitalize" ><strong>Company:</strong> {viewApp.company || "-"}</p>
               <p className="capitalize" ><strong>Services:</strong> {viewApp.services.join(", ")}</p>
-              <p  ><strong>Message:</strong> {viewApp.message}</p>
+              <p  ><strong>Message:</strong> {viewApp.message || "No Message "}</p>
               <p>
                 <strong>Date:</strong>{" "}
                 {viewApp.createdAt

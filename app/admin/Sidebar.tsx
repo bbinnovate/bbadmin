@@ -187,6 +187,16 @@ const getEffectivePermissions = (p: any): string[] => {
           {careerOpen && (
             <div className="ml-8 space-y-1">
               <Link
+                href="/admin/career-categories"
+                className={`block px-2 py-2 rounded-lg text-sm ${
+                  pathname.startsWith("/admin/career-categories")
+                    ? "bg-[var(--color-highlight)] text-black"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                Add Career Categories
+              </Link>
+              <Link
                 href="/admin/careers"
                 className={`block px-2 py-2 rounded-lg text-sm ${
                   pathname.startsWith("/admin/careers")

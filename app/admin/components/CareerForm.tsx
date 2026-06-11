@@ -8,6 +8,9 @@ import {
   collection,
   doc,
   serverTimestamp,
+  getDocs,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -20,6 +23,14 @@ import RawTool from "@editorjs/raw";
 import ImageTool from "@editorjs/image";
 import Button from "@/app/components/Button";
 
+
+type CareerCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  position: number;
+  isFeatured?: boolean;
+};
 const Embed = require("@editorjs/embed");
 
 function sanitizeData(data: unknown): unknown {
@@ -45,6 +56,8 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
   const [isImmediate, setIsImmediate] = useState(existingCareer?.isImmediate || false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("published");
+  const [categories, setCategories] = useState<CareerCategory[]>([]);
+
   const editorRef = useRef<EditorJS | null>(null);
   const editorContainer = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
@@ -79,6 +92,28 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
       });
     }
   }, [editorContainer]);
+
+
+
+useEffect(() => {
+  const fetchCategories = async () => {
+    const snapshot = await getDocs(
+      query(
+        collection(db, "careerCategories"),
+        orderBy("position", "asc")
+      )
+    );
+
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as CareerCategory[];
+
+    setCategories(data);
+  };
+
+  fetchCategories();
+}, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,23 +163,22 @@ export default function CareerForm({ existingCareer }: { existingCareer?: any })
       </div>
 
       {/* CATEGORY DROPDOWN */}
-      <div>
-        <label className="block text-sm font-semibold mb-1">Category</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="w-full border rounded-md px-3 py-2"
-        >
-          <option value="">Select Category</option>
-          <option value="performance">Performance Marketing</option>
-          <option value="social">Social Media</option>
-          <option value="design">Design & Editing</option>
-          <option value="seo">SEO</option>
-          <option value="tech">Tech / Development</option>
-          <option value="others">Others</option>
-        </select>
-      </div>
+    <div>
+  <label className="block text-sm font-semibold mb-1">
+    Category
+  </label>
+
+  <select
+  value={category}
+  onChange={(e) => setCategory(e.target.value)}
+>
+  {categories.map((cat: any) => (
+    <option key={cat.id} value={cat.slug}>
+      {cat.name}
+    </option>
+  ))}
+</select>
+</div>
 
       <div>
         <label className="block text-sm font-semibold mb-1">Description</label>
