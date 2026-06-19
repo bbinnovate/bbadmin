@@ -819,7 +819,7 @@ const handleDeleteCustomField = (index: number) => {
 
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-2xl font-semibold capitalize">{selectedDept} Questions</h2>
-                  <a href={`https://localhost:3001/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
+                  <a href={`https://bombayblokes.com/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
                     Preview Page <ExternalLink size={16} />
                   </a>
                 </div>
