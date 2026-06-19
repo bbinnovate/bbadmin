@@ -10,6 +10,13 @@ import "react-date-range/dist/theme/default.css";
 
 /* ================= TYPES ================= */
 
+type SubmittedCustomField = {
+  id?: string;
+  label: string;
+  inputType?: string;
+  value: string;
+};
+
 type QuoteItem = {
   label: string;
   type: string;
@@ -28,6 +35,7 @@ type CalculatorApp = {
   total: number;
   finalPrice: number;
   createdAt?: { seconds: number };
+  customFields?: SubmittedCustomField[];
 };
 
 type DateRangeState = {
@@ -221,7 +229,7 @@ const handleExportCSV = () => {
   // 2️⃣ Build CSV
   // -----------------------------
   const csv =
-    "Date,Name,Email,Phone,Service,Questions,Final Price\n" +
+    "Date,Name,Email,Phone,Service,Questions,Custom Fields,Final Price\n" +
     dataToExport
       .map((a) =>
         [
@@ -236,7 +244,10 @@ const handleExportCSV = () => {
               (q) =>
                 `${capitalizeWords(q.type)}: ${capitalizeWords(q.value)}`
             )
-            .join(" | "),
+            .join(" | ") || "-",
+          a.customFields
+            ?.map((field) => `${field.label}: ${field.value}`)
+            .join(" | ") || "-",
           `₹${Number(a.finalPrice || 0).toLocaleString("en-IN")}`,
         ]
           .map((v) => `"${v}"`)
@@ -563,6 +574,23 @@ const handleExportCSV = () => {
   <strong>Total:</strong> ₹{Number(viewApp?.finalPrice || 0).toLocaleString("en-IN")}
 </p>
 
+
+{Array.isArray(viewApp.customFields) && viewApp.customFields.length > 0 && (
+  <div className="mt-4">
+    <h5 className="font-semibold mb-2">Additional Details:</h5>
+    <div className="bg-gray-50 rounded-lg border">
+      {viewApp.customFields.map((field, index) => (
+        <div
+          key={field.id || index}
+          className="flex justify-between gap-4 px-4 py-3 border-b last:border-b-0"
+        >
+          <p className="font-semibold">{field.label}</p>
+          <p className="text-gray-600 break-all">{field.value}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
              {/* QUOTATION */}
         <div className="mt-5 ">

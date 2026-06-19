@@ -404,7 +404,7 @@ const htmlTemplate = `
     `;
 
     await sendEmail({
-      to: "aryankuril09@gmail.com",
+      to: ["hello@bombayblokes.com", "bdm@bombayblokes.com"],
       subject: `New Client Registration - ${companyName}`,
       html: teamNotification,
       fromName: "Website Client Registration",

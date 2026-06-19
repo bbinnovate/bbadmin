@@ -32,22 +32,39 @@ type Question = {
   options: Option[];
 };
 
+type CustomFieldInputType = "text" | "number" | "url";
+
+type CustomFieldVisibility =
+  | { mode: "always" }
+  | {
+      mode: "conditional";
+      questionIndex: number;
+      optionIndex: number;
+    };
+
+type CustomField = {
+  id: string;
+  question: string;
+  label?: string;
+  subtitle?: string;
+  inputType: CustomFieldInputType;
+  placeholder?: string;
+  required: boolean;
+  visibility: CustomFieldVisibility;
+};
+
 /* ===================== COMPONENT ===================== */
 
 const CalculatorForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-const editDeptId = searchParams.get("id"); // 👈 department name
-
-
+  const editDeptId = searchParams.get("id"); // 👈 department name
   const [departments, setDepartments] = useState<string[]>([]);
   const [newDept, setNewDept] = useState("");
   const [formState, setFormState] = useState<Record<string, Question[]>>({});
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
-
   const [metaTitles, setMetaTitles] = useState<Record<string, string>>({});
   const [metaDescriptions, setMetaDescriptions] = useState<Record<string, string>>({});
-
   const [questionForm, setQuestionForm] = useState({
     text: "",
     icon: "",
@@ -67,6 +84,17 @@ const editDeptId = searchParams.get("id"); // 👈 department name
   const [editingOptionIndex, setEditingOptionIndex] = useState<number | null>(null);
   const [selectedDependencyOptions, setSelectedDependencyOptions] = useState<number[]>([]);
   const [selectedDependencyQuestion, setSelectedDependencyQuestion] = useState<number | null>(null);
+  const [customFields, setCustomFields] = useState<Record<string, CustomField[]>>({});
+  const [customFieldForm, setCustomFieldForm] = useState<CustomField>({
+  id: "",
+  question: "",
+  subtitle: "",
+  inputType: "text",
+  placeholder: "",
+  required: false,
+  visibility: { mode: "always" },
+  });
+  const [editingCustomFieldIndex, setEditingCustomFieldIndex] = useState<number | null>(null);
 
   /* ===================== FIRESTORE SAVE (SAFE) ===================== */
 
@@ -74,12 +102,14 @@ const editDeptId = searchParams.get("id"); // 👈 department name
     deptName: string,
     questions: Question[],
     metaTitle?: string,
-    metaDescription?: string
+    metaDescription?: string,
+    customFieldsForDept?: CustomField[]
   ) => {
     try {
       const payload: any = {
         name: deptName,
         questions,
+        customFields: customFieldsForDept || customFields[deptName] || [],
         updatedAt: serverTimestamp(),
       };
 
@@ -108,7 +138,8 @@ const editDeptId = searchParams.get("id"); // 👈 department name
       deptName,
       formState[deptName],
       metaTitles[deptName],
-      metaDescriptions[deptName]
+      metaDescriptions[deptName],
+      customFields[deptName] || []
     );
   };
 
@@ -309,7 +340,8 @@ if (existingSnap.exists()) {
     newName,
     questions,
     metaTitles[oldName],
-    metaDescriptions[oldName]
+    metaDescriptions[oldName],
+    customFields[oldName] || []
   );
 
   // 3️⃣ DELETE OLD doc (THIS WAS MISSING)
@@ -359,6 +391,10 @@ useEffect(() => {
 
       const data = snap.data();
 
+      setCustomFields({
+  [editDeptId]: Array.isArray(data.customFields) ? data.customFields : [],
+});
+
       // 1️⃣ Set department list
       setDepartments([editDeptId]);
 
@@ -388,6 +424,92 @@ useEffect(() => {
 }, [editDeptId]);
 
 
+
+
+const resetCustomFieldForm = () => {
+  setCustomFieldForm({
+    id: "",
+  question: "",
+  subtitle: "",
+  inputType: "text",
+  placeholder: "",
+    required: false,
+    visibility: { mode: "always" },
+  });
+  setEditingCustomFieldIndex(null);
+};
+
+const handleAddOrUpdateCustomField = () => {
+  if (!selectedDept) return;
+
+  const question = (customFieldForm.question || customFieldForm.label || "").trim();
+
+  if (!question) {
+    showAlert("Please enter a custom step question.");
+    return;
+  }
+
+  const nextField: CustomField = {
+    ...customFieldForm,
+    id: customFieldForm.id || `custom-${Date.now()}`,
+    question,
+    label: question,
+    subtitle: customFieldForm.subtitle?.trim() || "",
+    placeholder: customFieldForm.placeholder?.trim() || "",
+  };
+
+  setCustomFields((prev) => {
+    const deptFields = [...(prev[selectedDept] || [])];
+
+    if (editingCustomFieldIndex !== null) {
+      deptFields[editingCustomFieldIndex] = nextField;
+    } else {
+      deptFields.push(nextField);
+    }
+
+    saveDepartmentToDB(
+      selectedDept,
+      formState[selectedDept] || [],
+      metaTitles[selectedDept],
+      metaDescriptions[selectedDept],
+      deptFields
+    );
+
+    return {
+      ...prev,
+      [selectedDept]: deptFields,
+    };
+  });
+
+  resetCustomFieldForm();
+};
+
+const handleEditCustomField = (field: CustomField, index: number) => {
+  setCustomFieldForm(field);
+  setEditingCustomFieldIndex(index);
+};
+
+const handleDeleteCustomField = (index: number) => {
+  if (!selectedDept) return;
+
+  setCustomFields((prev) => {
+    const deptFields = [...(prev[selectedDept] || [])];
+    deptFields.splice(index, 1);
+
+    saveDepartmentToDB(
+      selectedDept,
+      formState[selectedDept] || [],
+      metaTitles[selectedDept],
+      metaDescriptions[selectedDept],
+      deptFields
+    );
+
+    return {
+      ...prev,
+      [selectedDept]: deptFields,
+    };
+  });
+};
 
 
 
@@ -505,9 +627,199 @@ useEffect(() => {
 </button>
 
 
+<div className="my-8 p-4 bg-white rounded-lg border border-gray-300">
+  <div className="flex items-center justify-between mb-4">
+    <h4 className="text-lg font-semibold">Custom Steps</h4>
+    <button
+      type="button"
+      onClick={handleAddOrUpdateCustomField}
+      className="rounded-[5px] bg-[#262626] shadow-[2px_2px_0px_0px_#F9B31B] flex justify-center items-center gap-[10px] px-[30px] py-[10px] text-[#F9B31B] font-semibold transition-colors"
+    >
+      {editingCustomFieldIndex !== null ? "Save Custom Step" : "Add Custom Input Field"}
+    </button>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <input
+      type="text"
+      placeholder="Question / Main Heading"
+      value={customFieldForm.question || customFieldForm.label || ""}
+      onChange={(e) =>
+        setCustomFieldForm((prev) => ({ ...prev, question: e.target.value, label: e.target.value }))
+      }
+      className="bg-white border border-gray-300 p-2 rounded-lg"
+    />
+
+    <input
+      type="text"
+      placeholder="Subtitle optional"
+      value={customFieldForm.subtitle || ""}
+      onChange={(e) =>
+        setCustomFieldForm((prev) => ({ ...prev, subtitle: e.target.value }))
+      }
+      className="bg-white border border-gray-300 p-2 rounded-lg"
+    />
+
+    <select
+      value={customFieldForm.inputType}
+      onChange={(e) =>
+        setCustomFieldForm((prev) => ({
+          ...prev,
+          inputType: e.target.value as CustomFieldInputType,
+        }))
+      }
+      className="bg-white border border-gray-300 p-2 rounded-lg"
+    >
+      <option value="text">Text</option>
+      <option value="number">Number</option>
+      <option value="url">URL / Link</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Placeholder optional"
+      value={customFieldForm.placeholder || ""}
+      onChange={(e) =>
+        setCustomFieldForm((prev) => ({ ...prev, placeholder: e.target.value }))
+      }
+      className="bg-white border border-gray-300 p-2 rounded-lg"
+    />
+
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        checked={customFieldForm.required}
+        onChange={(e) =>
+          setCustomFieldForm((prev) => ({ ...prev, required: e.target.checked }))
+        }
+      />
+      Required
+    </label>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <select
+      value={customFieldForm.visibility.mode}
+      onChange={(e) =>
+        setCustomFieldForm((prev) => ({
+          ...prev,
+          visibility:
+            e.target.value === "always"
+              ? { mode: "always" }
+              : {
+                  mode: "conditional",
+                  questionIndex: 0,
+                  optionIndex: 0,
+                },
+        }))
+      }
+      className="bg-white border border-gray-300 p-2 rounded-lg"
+    >
+      <option value="always">Always show</option>
+      <option value="conditional">Show only when condition is selected</option>
+    </select>
+
+    {customFieldForm.visibility.mode === "conditional" && (
+      <>
+        <select
+          value={customFieldForm.visibility.questionIndex}
+          onChange={(e) =>
+            setCustomFieldForm((prev) => ({
+              ...prev,
+              visibility: {
+                mode: "conditional",
+                questionIndex: Number(e.target.value),
+                optionIndex: 0,
+              },
+            }))
+          }
+          className="bg-white border border-gray-300 p-2 rounded-lg"
+        >
+          {(formState[selectedDept] || []).map((q, index) => (
+            <option key={index} value={index}>
+              Q{index + 1}: {q.questionText}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={customFieldForm.visibility.optionIndex}
+          onChange={(e) =>
+            setCustomFieldForm((prev) => {
+              if (prev.visibility.mode !== "conditional") return prev;
+
+              return {
+                ...prev,
+                visibility: {
+                  ...prev.visibility,
+                  optionIndex: Number(e.target.value),
+                },
+              };
+            })
+          }
+          className="bg-white border border-gray-300 p-2 rounded-lg"
+        >
+          {(formState[selectedDept]?.[
+            customFieldForm.visibility.mode === "conditional"
+              ? customFieldForm.visibility.questionIndex
+              : 0
+          ]?.options || []).map((opt, index) => (
+            <option key={index} value={index}>
+              {opt.title}
+            </option>
+          ))}
+        </select>
+      </>
+    )}
+  </div>
+
+  <div className="space-y-3">
+    {(customFields[selectedDept] || []).map((field, index) => (
+      <div
+        key={field.id}
+        className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border border-gray-300 rounded-lg p-3"
+      >
+        <div>
+          <p className="font-semibold">{field.question || field.label}</p>
+          {field.subtitle && <p className="text-sm text-gray-500">{field.subtitle}</p>}
+          <p className="text-sm text-gray-600">
+            Type: {field.inputType} | Required: {field.required ? "Yes" : "No"}
+          </p>
+          <p className="text-sm text-gray-600">
+            Visibility:{" "}
+            {field.visibility.mode === "always"
+              ? "Always show"
+              : `When Q${field.visibility.questionIndex + 1}, option ${
+                  field.visibility.optionIndex + 1
+                } is selected`}
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => handleEditCustomField(field, index)}
+            className="px-3 py-1 bg-gray-800 text-white rounded"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDeleteCustomField(index)}
+            className="px-3 py-1 bg-red-600 text-white rounded"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-2xl font-semibold capitalize">{selectedDept} Questions</h2>
-                  <a href={`https://bombayblokes.com/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
+                  <a href={`https://localhost:3001/${selectedDept}`} target="_blank" rel="noopener noreferrer" className="text-purple-600 underline flex items-center gap-2 hover:text-purple-800">
                     Preview Page <ExternalLink size={16} />
                   </a>
                 </div>
