@@ -168,12 +168,12 @@ useEffect(() => {
     Category
   </label>
 
-  <select
+  <select className="w-full border rounded-md px-3 py-2"
   value={category}
   onChange={(e) => setCategory(e.target.value)}
 >
   {categories.map((cat: any) => (
-    <option key={cat.id} value={cat.slug}>
+    <option  key={cat.id} value={cat.slug}>
       {cat.name}
     </option>
   ))}

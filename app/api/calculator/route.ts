@@ -528,7 +528,7 @@ import { quotationTableHTML } from '@/lib/quotationTableHTML';
     ===================================================== */
     if (isFinalSubmit) {
       await sendEmail({
-        to: "aryankuril09@gmail.com",
+        to: ["hello@bombayblokes.com", "bdm@bombayblokes.com"],
         subject: `Inquiry - ${serviceNameTitle}`,
         html: `
           <p><strong>Name:</strong> ${name}</p>
