@@ -338,44 +338,31 @@ const createSlug = (title: string) => {
 <div className="relative min-w-[200px]">
  <div className="relative min-w-[220px]">
   <select
-    value={selectedCategory}
-    onChange={(e) =>
-      setSelectedCategory(e.target.value)
-    }
-    className="
-      appearance-none
-      border rounded-lg px-4 py-2.5 pr-10
-      w-full text-sm text-black bg-white
-      cursor-pointer focus:outline-none
-      capitalize
-    "
-  >
-<option value="">All Categories</option>
+  value={selectedCategory}
+  onChange={(e) =>
+    setSelectedCategory(e.target.value)
+  }
+  className="
+    appearance-none
+    border rounded-lg px-4 py-2.5 pr-10
+    w-full text-sm text-black bg-white
+    cursor-pointer focus:outline-none
+    capitalize
+  "
+>
+  <option value="">
+    All Categories
+  </option>
 
-<option value="performance">
-  Performance Marketing
-</option>
-
-<option value="social">
-  Social Media
-</option>
-
-<option value="design">
-  Design & Editing
-</option>
-
-<option value="seo">
-  SEO
-</option>
-
-<option value="tech">
-  Tech / Development
-</option>
-
-<option value="others">
-  Others
-</option>
-  </select>
+  {allCategories.map((category) => (
+    <option
+      key={category}
+      value={category}
+    >
+      {category}
+    </option>
+  ))}
+</select>
 
   <ChevronDown
     size={16}
