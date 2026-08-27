@@ -129,7 +129,9 @@ useEffect(() => {
         category,
         status,
         isImmediate,
-        ...(existingCareer ? { updatedAt: serverTimestamp() } : { postedAt: serverTimestamp() }),
+        ...(existingCareer
+          ? { updatedAt: serverTimestamp() }
+          : { postedAt: serverTimestamp(), updatedAt: serverTimestamp() }),
       };
 
       if (existingCareer) {

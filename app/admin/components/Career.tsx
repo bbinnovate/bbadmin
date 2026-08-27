@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { collection, getDocs, deleteDoc, doc ,updateDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { toast } from "react-hot-toast";
 import CareerCard from "../components/CareerCard";
@@ -27,8 +35,21 @@ interface Career {
   isFeatured: boolean;
   status?: "draft" | "published";
   category?: string;
-  postedAt: { seconds: number };
+  postedAt?: { seconds: number };
+  updatedAt?: { seconds: number };
 }
+
+const sortCareersByLastUpdated = (careers: Career[]) =>
+  [...careers].sort((a, b) => {
+    const getSeconds = (timestamp?: { seconds: number }) =>
+      timestamp?.seconds || 0;
+
+    return (
+      getSeconds(b.updatedAt || b.postedAt) -
+      getSeconds(a.updatedAt || a.postedAt)
+    );
+  });
+
 function renderEditorJsHTML(data: any) {
   if (!data || !data.blocks) return "";
 
@@ -148,16 +169,9 @@ useEffect(() => {
           ...doc.data(),
         })) as Career[];
 
-        // ✅ Convert timestamp
-        const toSeconds = (ts: any) => {
-          if (!ts) return 0;
-          if (ts.seconds) return ts.seconds;
-          if (typeof ts.toMillis === "function") return ts.toMillis() / 1000;
-          return 0;
-        };
-
-        // ✅ Sort Newest → Oldest
-        data = data.sort((a, b) => toSeconds(b.postedAt) - toSeconds(a.postedAt));
+        // Sort by the latest edit, falling back to the original posting time for
+        // careers created before updatedAt was introduced.
+        data = sortCareersByLastUpdated(data);
 
         setCareers(data);
       } catch (err) {
@@ -252,18 +266,20 @@ const toggleStatus = async (
     // ✅ firestore update
     await updateDoc(doc(db, "careers", id), {
       status: newStatus,
+      updatedAt: serverTimestamp(),
     });
 
     // ✅ instant ui update
     setCareers((prev) =>
-      prev.map((career) =>
+      sortCareersByLastUpdated(prev.map((career) =>
         career.id === id
           ? {
               ...career,
               status: newStatus as "draft" | "published",
+              updatedAt: Timestamp.now(),
             }
           : career
-      )
+      ))
     );
 
     toast.success(
@@ -278,18 +294,26 @@ const toggleStatus = async (
   }
 };
 
-const formatPostedAt = (postedAt?: { seconds: number }) => {
-  if (postedAt?.seconds) {
-    const d = new Date(postedAt.seconds * 1000);
+const formatLastUpdated = (
+  updatedAt?: { seconds: number },
+  postedAt?: { seconds: number }
+) => {
+  const timestamp = updatedAt || postedAt;
 
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
+  if (timestamp?.seconds) {
+    const d = new Date(timestamp.seconds * 1000);
 
-    return `${day}/${month}/${year}`;
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(d);
   }
 
-  return "--/--/----";
+  return "--/--/---- --:--";
 };
 
 
@@ -416,7 +440,7 @@ const createSlug = (title: string) => {
                 {/* <th className="p-3 text-left">Category</th> */}
                 <th className="p-3 text-left">Prioraty</th>
                 <th className="p-3 justify-center">Availability</th>
-                <th className="p-3 justify-center">Date</th>
+                <th className="p-3 justify-center">Last Updated</th>
                 <th className="p-3 justify-center">Status</th>
                 <th className="p-3 justify-center">Action</th>
               </tr>
@@ -491,14 +515,15 @@ const createSlug = (title: string) => {
       try {
         // 🔥 instant UI update
         setCareers((prev) =>
-          prev.map((item) =>
+          sortCareersByLastUpdated(prev.map((item) =>
             item.id === career.id
               ? {
                   ...item,
                   isImmediate: value,
+                  updatedAt: Timestamp.now(),
                 }
               : item
-          )
+          ))
         );
 
         // ✅ firestore update
@@ -506,6 +531,7 @@ const createSlug = (title: string) => {
           doc(db, "careers", career.id),
           {
             isImmediate: value,
+            updatedAt: serverTimestamp(),
           }
         );
 
@@ -544,7 +570,7 @@ const createSlug = (title: string) => {
 
         {/* <td className="p-3 capitalize">{career.title}</td> */}
                   <td className="p-3 capitalize">
-  {formatPostedAt(career.postedAt)}
+  {formatLastUpdated(career.updatedAt, career.postedAt)}
 </td>
 
 <td className="p-3 ">
