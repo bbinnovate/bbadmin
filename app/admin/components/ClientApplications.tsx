@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -35,6 +42,8 @@ export default function ClientApplications() {
   const [filteredApps, setFilteredApps] = useState<ClientApp[]>([]);
   const [viewApp, setViewApp] = useState<ClientApp | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -300,6 +309,50 @@ const handleExportCSV = () => {
   setShowExportRange(false);
 };
 
+
+
+const toggleSelect = (id: string) => {
+  setSelectedIds((prev) =>
+    prev.includes(id)
+      ? prev.filter((item) => item !== id)
+      : [...prev, id]
+  );
+};
+
+const handleDeleteSelected = async () => {
+  if (!selectedIds.length) {
+    alert("Please select records to delete");
+    return;
+  }
+
+  const confirmDelete = window.confirm(
+    `Delete ${selectedIds.length} selected record(s)?`
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await Promise.all(
+      selectedIds.map((id) =>
+        deleteDoc(doc(db, "clientApplications", id))
+      )
+    );
+
+    const updated = applications.filter(
+      (app) => !selectedIds.includes(app.id)
+    );
+
+    setApplications(updated);
+    setFilteredApps(updated);
+    setSelectedIds([]);
+
+    alert("Deleted successfully");
+  } catch (error) {
+    console.error("Delete error:", error);
+    alert("Failed to delete records");
+  }
+};
+
   return (
     <div className="relative">
       <h3 className="text-xl font-semibold mb-5">Client Applications</h3>
@@ -367,12 +420,33 @@ const handleExportCSV = () => {
     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
   </div>
 
-        <button
-          onClick={() => setShowExportRange(true)}
-          className="bg-black text-white px-4 py-2 rounded-lg  cursor-pointer"
-        >
-          Export CSV
-        </button>
+       <div className="flex gap-2">
+  <button
+    onClick={() => setShowExportRange(true)}
+    className="bg-black text-white px-4 py-2 rounded-lg cursor-pointer"
+  >
+    Export CSV
+  </button>
+
+  {/* <button
+    onClick={handleDeleteSelected}
+    disabled={selectedIds.length === 0}
+    className="
+      bg-red-600
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      cursor-pointer
+      disabled:opacity-50
+      disabled:cursor-not-allowed
+    "
+  >
+    Delete Selected
+    {selectedIds.length > 0 && ` (${selectedIds.length})`}
+  </button> */}
+</div>
+       
       </div>
 
       {/* Table */}
@@ -391,6 +465,35 @@ const handleExportCSV = () => {
         <table className="min-w-[1200px] w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
+                {/* <th className="p-3 text-left">
+    <input
+      type="checkbox"
+      checked={
+        currentApps.length > 0 &&
+        currentApps.every((app) =>
+          selectedIds.includes(app.id)
+        )
+      }
+      onChange={(e) => {
+        if (e.target.checked) {
+          setSelectedIds((prev) => [
+            ...new Set([
+              ...prev,
+              ...currentApps.map((app) => app.id),
+            ]),
+          ]);
+        } else {
+          setSelectedIds((prev) =>
+            prev.filter(
+              (id) =>
+                !currentApps.some((app) => app.id === id)
+            )
+          );
+        }
+      }}
+      className="h-4 w-4 cursor-pointer"
+    />
+  </th> */}
               <th className="p-3 text-left">SR No.</th>
               <th className="p-3 text-left">Company</th>
               <th className="p-3 text-left">Brand</th>
@@ -409,6 +512,14 @@ const handleExportCSV = () => {
           <tbody>
             {currentApps.map((a,i) => (
               <tr key={a.id} className="border-t">
+                {/* <td className="p-3">
+      <input
+        type="checkbox"
+        checked={selectedIds.includes(a.id)}
+        onChange={() => toggleSelect(a.id)}
+        className="h-4 w-4 cursor-pointer"
+      />
+    </td> */}
                 <td className="p-3 capitalize ">{indexOfFirst + i + 1}</td>
                 <td className="p-3 capitalize">{a.companyName}</td>
                 <td className="p-3 capitalize">{a.brandName || "-"}</td>

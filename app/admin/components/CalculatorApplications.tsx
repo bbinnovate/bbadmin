@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { DateRange } from "react-date-range";
 import { ChevronDown } from "lucide-react";
@@ -62,6 +69,8 @@ export default function CalculatorApplications() {
   const [apps, setApps] = useState<CalculatorApp[]>([]);
   const [filtered, setFiltered] = useState<CalculatorApp[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [search, setSearch] = useState("");
    const [searchTerm, setSearchTerm] = useState("");
@@ -324,6 +333,59 @@ const handleExportCSV = () => {
 
   /* ================= UI ================= */
 
+ const toggleSelect = (id: string) => {
+  setSelectedIds((prev) =>
+    prev.includes(id)
+      ? prev.filter((selectedId) => selectedId !== id)
+      : [...prev, id]
+  );
+};
+
+const toggleSelectAll = () => {
+  if (selectedIds.length === filtered.length) {
+    setSelectedIds([]);
+  } else {
+    setSelectedIds(filtered.map((app) => app.id));
+  }
+};
+
+const handleDeleteSelected = async () => {
+  if (selectedIds.length === 0) return;
+
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${selectedIds.length} application${
+      selectedIds.length > 1 ? "s" : ""
+    }?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await Promise.all(
+      selectedIds.map((id) =>
+        deleteDoc(doc(db, "calculatorApplications", id))
+      )
+    );
+
+    setApps((prev) =>
+      prev.filter((app) => !selectedIds.includes(app.id))
+    );
+
+    setFiltered((prev) =>
+      prev.filter((app) => !selectedIds.includes(app.id))
+    );
+
+    setSelectedIds([]);
+
+    if (viewApp && selectedIds.includes(viewApp.id)) {
+      setViewApp(null);
+    }
+  } catch (error) {
+    console.error("Error deleting selected applications:", error);
+    alert("Failed to delete selected applications.");
+  }
+};
+
   return (
     <div className="relative">
       <h3 className="text-xl font-semibold mb-5">
@@ -399,6 +461,19 @@ const handleExportCSV = () => {
              >
                Export CSV
              </button>
+             {/* <div className="mb-4 flex items-center justify-between">
+
+
+
+    <button
+      type="button"
+      onClick={handleDeleteSelected}
+      className="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+    >
+      Delete Selected ({selectedIds.length})
+    </button>
+
+</div> */}
            </div>
 
      <div
@@ -416,6 +491,25 @@ const handleExportCSV = () => {
         <table className="min-w-[1200px] w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
+              {/* <div className="mb-4 flex items-center justify-between">
+  <label className="flex items-center gap-2 cursor-pointer p-4">
+    <input
+      type="checkbox"
+      checked={
+        filtered.length > 0 &&
+        selectedIds.length === filtered.length
+      }
+      onChange={toggleSelectAll}
+      className="h-4 w-4 cursor-pointer"
+    />
+
+    <span className="text-sm font-medium text-black">
+      Select All
+    </span>
+  </label>
+
+
+</div> */}
               <th className="px-2 py-3">SR No.</th>
               <th className="px-2 py-3">Date</th>
               <th className="px-2 py-3">Name</th>
@@ -429,6 +523,14 @@ const handleExportCSV = () => {
           <tbody>
             {currentApps.map((a, i) => (
               <tr key={a.id} className="border-t">
+                {/* <td className="p-3">
+  <input
+    type="checkbox"
+    checked={selectedIds.includes(a.id)}
+    onChange={() => toggleSelect(a.id)}
+    className="h-4 w-4 cursor-pointer"
+  />
+</td> */}
                 <td className="px-4 py-3 text-center">{indexOfFirst + i + 1}</td>
                 <td className="px-4 py-3 text-center">{formatDate(a.createdAt?.seconds)}</td>
                 <td className="px-4 py-3 text-center capitalize">{a.name || "-"}</td>

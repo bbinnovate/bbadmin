@@ -39,7 +39,7 @@ const tableScrollRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-const appsPerPage = 50;
+const appsPerPage = 100;
  
 const indexOfLast = currentPage * appsPerPage;
 const indexOfFirst = indexOfLast - appsPerPage;

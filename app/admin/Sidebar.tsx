@@ -217,15 +217,15 @@ const getEffectivePermissions = (p: any): string[] => {
               >
                 <span>Manage Applications</span>
 
-                <span
-                  className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold ${
-                    pathname === "/admin/career-applications"
-                      ? "bg-black text-[var(--color-highlight)]"
-                      : "bg-[var(--color-highlight)] text-black"
-                  }`}
-                >
-                  {careerCount}
-                </span>
+               <span
+  className={`min-w-[36px] h-7 px-1 flex items-center justify-center rounded-full text-xs font-semibold whitespace-nowrap ${
+    pathname === "/admin/career-applications"
+      ? "bg-black text-[var(--color-highlight)]"
+      : "bg-[var(--color-highlight)] text-black"
+  }`}
+>
+  {careerCount}
+</span>
               </Link>
             </div>
           )}
